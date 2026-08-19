@@ -1,5 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import Category from "@/components/Category";
+import Arrivals from "@/components/Arrivals";
+import BestSellers from "@/components/BestSellers";
+import CollectionItems from "@/components/CollectionItems";
+import HeroSection from "@/components/HeroSection";
 import { ArrowRight } from "lucide-react";
 import { products } from "@/lib/products";
 import { categories } from "@/lib/categories";
@@ -9,14 +14,13 @@ import CategoryCard from "@/components/CategoryCard";
 import CollectionCard from "@/components/CollectionCard";
 
 export default function Home() {
-  const newArrivals = products.filter((p) => p.isNew).slice(0, 8);
-  const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 6);
   const featuredCollections = collections.slice(0, 3);
 
   return (
     <div>
       {/* HERO */}
-      <section className="relative overflow-hidden bg-[#f7f7f8]">
+      <HeroSection />
+      {/* <section className="relative overflow-hidden bg-[#f7f7f8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="animate-fade-in-up order-2 lg:order-1">
@@ -63,119 +67,15 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/* SHOP BY CATEGORY */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="text-center max-w-xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f172a]">
-            Shop By Category
-          </h2>
-          <p className="mt-2 text-sm sm:text-base text-[#827e9c]">
-            Explore every silhouette, from everyday staples to statement
-            pieces.
-          </p>
-        </div>
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {categories.map((category) => (
-            <CategoryCard key={category.slug} category={category} />
-          ))}
-        </div>
-      </section>
-
-      {/* NEW ARRIVALS */}
-      <section className="bg-[#f7f7f8] py-16 sm:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f172a]">
-                New Arrivals
-              </h2>
-              <p className="mt-2 text-sm sm:text-base text-[#827e9c]">
-                Fresh designs. Timeless silver.
-              </p>
-            </div>
-            <Link
-              href="/new-arrivals"
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-            >
-              View All New Arrivals
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10">
-            {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-
-          <div className="mt-10 text-center sm:hidden">
-            <Link
-              href="/new-arrivals"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-            >
-              View All New Arrivals
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* BEST SELLERS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f172a]">
-              Best Sellers
-            </h2>
-            <p className="mt-2 text-sm sm:text-base text-[#827e9c]">
-              The pieces our customers keep coming back for.
-            </p>
-          </div>
-          <Link
-            href="/products?sort=rating"
-            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-          >
-            View All
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10">
-          {bestSellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+      <Category />
+      <Arrivals />
+      <BestSellers />
 
       {/* COLLECTIONS */}
-      <section className="bg-[#f7f7f8] py-16 sm:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f172a]">
-              Collections
-            </h2>
-            <p className="mt-2 text-sm sm:text-base text-[#827e9c]">
-              Curated edits for every occasion.
-            </p>
-          </div>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
-            {featuredCollections.map((collection) => (
-              <CollectionCard key={collection.slug} collection={collection} />
-            ))}
-          </div>
-          <div className="mt-10 text-center">
-            <Link
-              href="/collections"
-              className="inline-flex items-center gap-2 rounded-full border border-[#c5c6cc] text-[#0f172a] text-sm font-medium px-7 py-3.5 hover:bg-white transition-all duration-300"
-            >
-              View All Collections
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CollectionItems />
+      
     </div>
   );
 }
