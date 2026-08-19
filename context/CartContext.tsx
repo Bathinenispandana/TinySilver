@@ -50,19 +50,44 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items, hydrated]);
 
-  const addToCart = (product: Product, quantity = 1) => {
+  const addToCart = (product: Product) => {
+    // Find this product in the cart
+    const existingItem = items.find((item) => item.product.id === product.id);
+
+    // How many are already in the cart
+    const currentQuantity = existingItem?.quantity ?? 0;
+
+    // Check available stock
+    if (currentQuantity >= product.stock) {
+      showToast(
+        `Only ${product.stock} pieces are available for ${product.name}.`,
+      );
+      return;
+    }
+
+    // If stock is available, continue adding
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      const existing = prev.find((item) => item.product.id === product.id);
+
       if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id
-            ? { ...i, quantity: i.quantity + quantity }
-            : i
+        return prev.map((item) =>
+          item.product.id === product.id
+            ? {
+                ...item,
+                quantity: item.quantity + 1,
+              }
+            : item,
         );
       }
-      return [...prev, { product, quantity }];
+
+      return [
+        ...prev,
+        {
+          product,
+          quantity: 1,
+        },
+      ];
     });
-    showToast(`✓ Added "${product.name}" to Cart`);
   };
 
   const removeFromCart = (productId: number) => {
@@ -73,7 +98,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const updateQuantity = (productId: number, quantity: number) => {
     if (quantity < 1) return;
     setItems((prev) =>
-      prev.map((i) => (i.product.id === productId ? { ...i, quantity } : i))
+      prev.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
     );
   };
 
@@ -81,12 +106,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const subtotal = useMemo(
     () => items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
-    [items]
+    [items],
   );
 
   const itemCount = useMemo(
     () => items.reduce((sum, i) => sum + i.quantity, 0),
-    [items]
+    [items],
   );
 
   return (
