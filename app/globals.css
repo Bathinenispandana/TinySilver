@@ -1,11 +1,83 @@
 @import "tailwindcss";
 
 :root {
+    
   --brand-dark: #0f172a;
   --brand-secondary: #827e9c;
   --brand-silver: #c5c6cc;
   --brand-white: #ffffff;
 }
+
+:root {
+  color-scheme: dark;
+  --background: #0f172a;
+  --foreground: #ca94c1;
+  --card: #49496c;
+  --card-foreground: #ca94c1;
+  --popover: #49496c;
+  --popover-foreground: #ca94c1;
+  --primary: #e8e8e8;
+  --primary-foreground: #25314d;
+  --secondary: #f9afd8;
+  --secondary-foreground: #25314d;
+  --muted: #71618a;
+  --muted-foreground: #ca94c1;
+  --accent: #e8e8e8;
+  --accent-foreground: #25314d;
+  --destructive: #ff6b6b;
+  --border: #49496c;
+  --input: #49496c;
+  --ring: #ca94c1;
+  --chart-1: #ca94c1;
+  --chart-2: #f9afd8;
+  --chart-3: #9c7aa6;
+  --chart-4: #71618a;
+  --chart-5: #49496c;
+  --radius: 0.5rem;
+  --sidebar: #25314d;
+  --sidebar-foreground: #ca94c1;
+  --sidebar-primary: #ca94c1;
+  --sidebar-primary-foreground: #25314d;
+  --sidebar-accent: #f9afd8;
+  --sidebar-accent-foreground: #25314d;
+  --sidebar-border: #49496c;
+  --sidebar-ring: #ca94c1;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0f172a;
+  --foreground: #ca94c1;
+  --card: #49496c;
+  --card-foreground: #ca94c1;
+  --popover: #49496c;
+  --popover-foreground: #ca94c1;
+  --primary: #ca94c1;
+  --primary-foreground: #25314d;
+  --secondary: #f9afd8;
+  --secondary-foreground: #25314d;
+  --muted: #71618a;
+  --muted-foreground: #ca94c1;
+  --accent: #f9afd8;
+  --accent-foreground: #25314d;
+  --destructive: #ff6b6b;
+  --border: #49496c;
+  --input: #49496c;
+  --ring: #ca94c1;
+  --chart-1: #ca94c1;
+  --chart-2: #f9afd8;
+  --chart-3: #9c7aa6;
+  --chart-4: #71618a;
+  --chart-5: #49496c;
+  --sidebar: #25314d;
+  --sidebar-foreground: #ca94c1;
+  --sidebar-primary: #ca94c1;
+  --sidebar-primary-foreground: #25314d;
+  --sidebar-accent: #f9afd8;
+  --sidebar-accent-foreground: #25314d;
+  --sidebar-border: #49496c;
+  --sidebar-ring: #ca94c1;
+} 
 
 @theme inline {
   --color-brand-dark: var(--brand-dark);

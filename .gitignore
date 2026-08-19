@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 
@@ -20,3 +21,11 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+=======
+node_modules/
+.next/
+out/
+.env*
+.vercel/
+*.tsbuildinfo
+>>>>>>> ca3bc7120406917dce885e618c845e6e7fc96214
