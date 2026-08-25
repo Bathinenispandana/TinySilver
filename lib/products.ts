@@ -637,7 +637,7 @@ export const products: Product[] = [
     collection: "daily-wear",
 
     isNew: false,
-    isBestSeller: true,
+    isBestSeller: false,
 
     material: "925 Sterling Silver",
     weight: "2g",
@@ -663,7 +663,34 @@ export function getProductById(id: number) {
   return products.find((product) => product.id === id);
 }
 
+// ============================================
+// GET NEW ARRIVALS
+// ============================================
 
+export function getNewArrivals(limit?: number) {
+  const newArrivals = products.filter(
+    (product) => product.isNew === true
+  );
+
+  return limit
+    ? newArrivals.slice(0, limit)
+    : newArrivals;
+}
+
+
+// ============================================
+// GET BEST SELLERS
+// ============================================
+
+export function getBestSellers(limit?: number) {
+  const bestSellers = products.filter(
+    (product) => product.isBestSeller === true
+  );
+
+  return limit
+    ? bestSellers.slice(0, limit)
+    : bestSellers;
+}
 // ============================================
 // GET RELATED PRODUCTS
 // ============================================
