@@ -9,8 +9,8 @@ export default function Arrivals() {
   const Arrivals = products.filter((p) => p.isNew).slice(0, 8);
 
   return (
-    <section className="bg-[#0f172a] py-16 sm:py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="max-w-7xl mx-auto bg-[#0f172a] py-16 sm:py-20">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
               <h2 className="text-2xl sm:text-3xl font-semibold text-[#e8e8e8]">

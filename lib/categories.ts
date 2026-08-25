@@ -6,6 +6,12 @@ export interface Category {
 
 export const categories: Category[] = [
   {
+    slug: "coins",
+    name: "Coins",
+    image:
+      "/silver-coin-1g.webp",
+  },
+  {
     slug: "srichakra",
     name: "Srichakra",
     image:
@@ -22,12 +28,6 @@ export const categories: Category[] = [
     name: "KumKumBox",
     image:
       "/silver-kumkumbox-2.5g-1.webp",
-  },
-  {
-    slug: "coins",
-    name: "Coins",
-    image:
-      "/silver-coin-1g.webp",
   },
   {
     slug: "plates",

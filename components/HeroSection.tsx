@@ -1,13 +1,35 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import VerticalImageCarousel, {
+  CarouselImage,
+} from "@/components/Verticalimagecarousal";
+
+// Example data — swap these src values for your own asset paths
+// (e.g. images placed in /public and referenced as "/kumkum-box.webp").
+const heroImages: CarouselImage[] = [
+  {
+    id: 1,
+    src: "/silver-kumkumbox-2.5g-2.webp",
+    alt: "Silver kumkum box, 2.5g",
+  },
+  {
+    id: 2,
+    src: "/butterfly-3g-2.webp",
+    alt: "Sterling silver butterfly toe rings, 3g",
+  },
+  {
+    id: 3,
+    src: "/silver-coin-5g.webp",
+    alt: "Silver Lakshmi coin, 5g",
+  },
+];
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#0f172a]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="max-w-7xl mx-auto relative overflow-visible bg-[#0f172a]">
+      <div className="px-4 sm:px-6 lg:px-16 py-8 sm:py-10 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-center">
           <div className="animate-fade-in-up order-2 lg:order-1">
             <span className="inline-block text-xs font-semibold uppercase tracking-[0.2em] text-[#e8e8e8]/40">
               925 Sterling Silver
@@ -38,17 +60,12 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="order-1 lg:order-2 animate-fade-in">
-            <div className="w-full max-w-[280px] mx-auto overflow-hidden rounded-2xl">
-              <Image
-                src="/silver-kumkumbox-5g-1.webp"
-                alt="Premium silver jewellery"
-                width={600}
-                height={750}
-                priority
-                className="w-full h-auto object-contain"
-              />
-            </div>
+          <div className="order-1 lg:order-2 flex justify-center">
+            <VerticalImageCarousel
+              images={heroImages}
+              autoPlay={true}
+              interval={3500}
+            />
           </div>
         </div>
       </div>

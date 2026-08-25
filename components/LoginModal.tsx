@@ -39,7 +39,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
     if (!email || !password) return;
     login(email, mode === "signup" ? name || "Customer" : undefined);
     showToast(
-      mode === "signup" ? "Account created — welcome!" : "Welcome back!"
+      mode === "signup" ? "Account created — welcome!" : "Welcome back!",
     );
     onClose();
   };
@@ -55,152 +55,168 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
-      <div className="animate-modal-in relative w-full max-w-sm rounded-2xl bg-white p-7 sm:p-8 shadow-2xl">
+      {/*
+        Outer shell is capped at 80% of the viewport height and clips
+        overflow. The close button lives outside the scrollable area
+        (as a sibling, not a child of it) so it stays put at the top
+        right no matter how far the form content scrolls.
+      */}
+      <div className="animate-modal-in relative flex max-h-[80vh] w-full max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         <button
           type="button"
           aria-label="Close login modal"
           onClick={onClose}
-          className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full text-[#0f172a] hover:bg-[#c5c6cc]/30 transition-all duration-300"
+          className="absolute right-5 top-5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-[#0f172a] backdrop-blur-sm hover:bg-[#c5c6cc]/30 transition-all duration-300"
         >
           <X className="h-4.5 w-4.5" />
         </button>
 
-        <div className="flex flex-col items-center text-center">
-          <span className="text-xl font-semibold tracking-widest text-[#0f172a]">
-            SILVERAZ
-          </span>
-          <h2
-            id="login-modal-title"
-            className="mt-5 text-lg font-semibold text-[#0f172a]"
-          >
-            {mode === "login" ? "Welcome Back" : "Create Account"}
-          </h2>
-          <p className="mt-1 text-sm text-[#827e9c]">
-            {mode === "login"
-              ? "Sign in to continue your silver journey."
-              : "Join us for early access to new arrivals."}
-          </p>
-        </div>
+        {/* ================= SCROLLABLE CONTENT ================= */}
 
-        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
-          {mode === "signup" && (
-            <div>
-              <label
-                htmlFor="name"
-                className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
-              >
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
-                placeholder="Ananya Sharma"
+        <div className="overflow-y-auto p-7 sm:p-8">
+          <div className="flex flex-col items-center text-center">
+            {/* ================= LOGO AT TOP ================= */}
+
+            <div className="flex w-full justify-center">
+              <img
+                src="/tinysilver.webp"
+                alt="Tiny Silver Logo"
+                className="h-16 w-auto object-contain sm:h-16 lg:h-20"
               />
             </div>
+            <h2
+              id="login-modal-title"
+              className="mt-5 text-lg font-semibold text-[#0f172a]"
+            >
+              {mode === "login" ? "Welcome Back" : "Create Account"}
+            </h2>
+            <p className="mt-1 text-sm text-[#827e9c]">
+              {mode === "login"
+                ? "Sign in to continue your silver journey."
+                : "Join us for early access to new arrivals."}
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+            {mode === "signup" && (
+              <div>
+                <label
+                  htmlFor="name"
+                  className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
+                  placeholder="Ananya Sharma"
+                />
+              </div>
+            )}
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={4}
+                className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="mt-1 w-full rounded-full bg-[#0f172a] py-3 text-sm font-semibold text-white hover:bg-[#827e9c] transition-all duration-300"
+            >
+              {mode === "login" ? "Login" : "Create Account"}
+            </button>
+          </form>
+
+          {mode === "login" && (
+            <button
+              type="button"
+              onClick={() => showToast("Password reset link sent (simulated)")}
+              className="mt-4 w-full text-center text-xs text-[#827e9c] hover:text-[#0f172a] transition-colors duration-300"
+            >
+              Forgot Password?
+            </button>
           )}
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
-              placeholder="you@example.com"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={4}
-              className="w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all duration-300"
-              placeholder="••••••••"
-            />
-          </div>
 
-          <button
-            type="submit"
-            className="mt-1 w-full rounded-full bg-[#0f172a] py-3 text-sm font-semibold text-white hover:bg-[#827e9c] transition-all duration-300"
-          >
-            {mode === "login" ? "Login" : "Create Account"}
-          </button>
-        </form>
-
-        {mode === "login" && (
           <button
             type="button"
-            onClick={() => showToast("Password reset link sent (simulated)")}
-            className="mt-4 w-full text-center text-xs text-[#827e9c] hover:text-[#0f172a] transition-colors duration-300"
+            onClick={() => {
+              login("guest@silveraz.com", "Guest User");
+              showToast("Continuing with Google (simulated)");
+              onClose();
+            }}
+            className="mt-4 w-full rounded-full border border-[#c5c6cc] py-3 text-sm font-medium text-[#0f172a] hover:bg-[#c5c6cc]/30 transition-all duration-300"
           >
-            Forgot Password?
+            Continue with Google
           </button>
-        )}
 
-        <button
-          type="button"
-          onClick={() => {
-            login("guest@silveraz.com", "Guest User");
-            showToast("Continuing with Google (simulated)");
-            onClose();
-          }}
-          className="mt-4 w-full rounded-full border border-[#c5c6cc] py-3 text-sm font-medium text-[#0f172a] hover:bg-[#c5c6cc]/30 transition-all duration-300"
-        >
-          Continue with Google
-        </button>
+          <p className="mt-5 text-center text-sm text-[#827e9c]">
+            {mode === "login" ? (
+              <>
+                Don&apos;t have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => setMode("signup")}
+                  className="font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
+                >
+                  Create Account
+                </button>
+              </>
+            ) : (
+              <>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => setMode("login")}
+                  className="font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
+                >
+                  Login
+                </button>
+              </>
+            )}
+          </p>
 
-        <p className="mt-5 text-center text-sm text-[#827e9c]">
-          {mode === "login" ? (
-            <>
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                onClick={() => setMode("signup")}
-                className="font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-              >
-                Create Account
-              </button>
-            </>
-          ) : (
-            <>
-              Already have an account?{" "}
-              <button
-                type="button"
-                onClick={() => setMode("login")}
-                className="font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-              >
-                Login
-              </button>
-            </>
-          )}
-        </p>
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-4 w-full text-center text-xs text-[#827e9c] hover:text-[#0f172a] underline underline-offset-2 transition-colors duration-300"
-        >
-          Continue browsing as guest
-        </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="mt-4 w-full text-center text-xs text-[#827e9c] hover:text-[#0f172a] underline underline-offset-2 transition-colors duration-300"
+          >
+            Continue browsing as guest
+          </button>
+        </div>
       </div>
     </div>
   );
