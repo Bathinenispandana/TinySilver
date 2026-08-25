@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Camera, Users, MapPin } from "lucide-react";
+import Image from "next/image";
 
 const SHOP_LINKS = [
   { href: "/products", label: "All Products" },
@@ -51,13 +52,19 @@ function FooterColumn({
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] mt-24">
+    <footer className="bg-[#0f172a] mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
           <div className="col-span-2 md:col-span-2">
-            <span className="text-xl font-semibold tracking-[0.15em] text-white">
-              SILVERAZ
-            </span>
+            <Link href="/">
+              <Image
+                src="/tinysilver.webp"
+                alt="Silver Jewellery Logo"
+                width={50}
+                height={15}
+                className="h-auto w-auto"
+              />
+            </Link>
             <p className="mt-4 max-w-xs text-sm text-[#c5c6cc] leading-relaxed">
               Handcrafted 925 silver ornaments designed to become part of
               your story. Timeless silver, modern elegance.

@@ -12,6 +12,7 @@ import { collections } from "@/lib/collections";
 import ProductCard from "@/components/ProductCard";
 import CategoryCard from "@/components/CategoryCard";
 import CollectionCard from "@/components/CollectionCard";
+import DeliveryLocation from "@/components/DeliveryLocation";
 
 export default function Home() {
   const featuredCollections = collections.slice(0, 3);
@@ -75,7 +76,8 @@ export default function Home() {
 
       {/* COLLECTIONS */}
       <CollectionItems />
-      
+      {/* <DeliveryLocation /> */}
     </div>
   );
 }
+ 
