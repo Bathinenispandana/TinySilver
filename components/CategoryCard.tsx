@@ -16,7 +16,7 @@ export default function CategoryCard({ category }: { category: Category }) {
         sizes="(max-width: 768px) 50vw, 25vw"
         className="object-cover transition-transform duration-500 group-hover:scale-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/70 via-[#0f172a]/10 to-transparent transition-opacity duration-300 group-hover:from-[#0f172a]/80" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#e8e8e8]/70 via-[#e8e8e8]/10 to-transparent transition-opacity duration-300 group-hover:from-[#0f172a]/80" />
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
         <h3 className="text-white text-base sm:text-lg font-medium">
           {category.name}

@@ -1,16 +1,12 @@
 @import "tailwindcss";
 
+
 :root {
-    
+  color-scheme: dark;
   --brand-dark: #0f172a;
   --brand-secondary: #827e9c;
   --brand-silver: #c5c6cc;
   --brand-white: #ffffff;
-}
-
-:root {
-  color-scheme: dark;
-  --background: #0f172a;
   --foreground: #ca94c1;
   --card: #49496c;
   --card-foreground: #ca94c1;

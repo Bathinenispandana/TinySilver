@@ -9,14 +9,14 @@ export default function Arrivals() {
   const Arrivals = products.filter((p) => p.isNew).slice(0, 8);
 
   return (
-    <section className="max-w-7xl mx-auto bg-[#0f172a] py-16 sm:py-20">
+    <section className="max-w-7xl mx-auto bg-[#e8e8e8] py-10 sm:py-14">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-semibold text-[#e8e8e8]">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f172a]">
                 New Arrivals
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-[#e8e8e8]/40">
+              <p className="mt-2 text-sm sm:text-base text-[#0f172a]/60">
                 Fresh designs. Timeless silver.
               </p>
             </div>

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LoginModal from "@/components/LoginModal";
 import { useAuth } from "@/context/AuthContext";
+import SocialSticky from "@/components/SocialSticky";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const { isLoggedIn, hasSeenLogin, markLoginSeen } = useAuth();
@@ -26,6 +27,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <>
       <Header onOpenLogin={() => setLoginOpen(true)} />
       <main className="flex-1">{children}</main>
+      <SocialSticky />
       <Footer />
       <LoginModal open={loginOpen} onClose={closeLogin} />
     </>

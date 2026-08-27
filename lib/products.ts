@@ -45,6 +45,7 @@ export const categories = [
   "Leaf",
   "Srichakra",
   "Rakhi",
+  "Bowl",
 ];
 
 
@@ -69,7 +70,7 @@ export const products: Product[] = [
     category: "KumKumBox",
     collection: "daily-wear",
 
-    isNew: true,
+    isNew: false,
     isBestSeller: true,
 
     material: "925 Sterling Silver",
@@ -167,7 +168,7 @@ export const products: Product[] = [
     category: "Diya",
     collection: "daily-wear",
 
-    isNew: true,
+    isNew: false,
     isBestSeller: true,
 
     material: "925 Sterling Silver",
@@ -199,7 +200,7 @@ export const products: Product[] = [
     collection: "daily-wear",
 
     isNew: false,
-    isBestSeller: true,
+    isBestSeller: false,
 
     material: "925 Sterling Silver",
     weight: "9g",
@@ -332,7 +333,7 @@ export const products: Product[] = [
     category: "ToeRings",
     collection: "daily-wear",
 
-    isNew: true,
+    isNew: false,
     isBestSeller: true,
 
     material: "925 Sterling Silver",
@@ -430,7 +431,7 @@ export const products: Product[] = [
     category: "Coins",
     collection: "daily-wear",
 
-    isNew: false,
+    isNew: true,
     isBestSeller: false,
 
     material: "925 Sterling Silver",
@@ -498,7 +499,7 @@ export const products: Product[] = [
     collection: "daily-wear",
 
     isNew: false,
-    isBestSeller: true,
+    isBestSeller: false,
 
     material: "925 Sterling Silver",
     weight: "5g",
@@ -628,15 +629,105 @@ export const products: Product[] = [
     price: 4200,
     originalPrice: 4600,
 
-    image: "/2g-Srichakra.webp",
+    image: "/srichakra-2g.webp",
     images: [
-      "/2g-Srichakra.webp",
+      "/srichakra-2g.webp",
     ],
 
     category: "Srichakra",
     collection: "daily-wear",
 
-    isNew: false,
+    isNew: true,
+    isBestSeller: false,
+
+    material: "925 Sterling Silver",
+    weight: "2g",
+    dimensions: "Standard", 
+
+    description:
+      "Intricately designed silver Srichakra suitable for pooja and spiritual spaces.",
+
+    rating: 4.9,
+    reviews: 23,
+
+    inStock: true,
+    stock: 4,
+  },
+  {
+    id: 19,
+    name: "Silver Bowl",
+    price: 4200,
+    originalPrice: 4600,
+
+    image: "/silver-bowl-8g.webp",
+    images: [
+      "/silver-bowl-8g.webp",
+    ],
+
+    category: "Bowl",
+    collection: "daily-wear",
+
+    isNew: true,
+    isBestSeller: false,
+
+    material: "925 Sterling Silver",
+    weight: "8g",
+    dimensions: "Standard",
+
+    description:
+      "Intricately designed silver bowl suitable for pooja and spiritual spaces.",
+
+    rating: 4.9,
+    reviews: 23,
+
+    inStock: true,
+    stock: 4,
+  },
+  {
+    id: 20,
+    name: "Ear Cuffs",
+    price: 4200,
+    originalPrice: 4600,
+
+    image: "/ear-cuffs-3g-1.webp",
+    images: [
+      "/ear-cuffs-3g-1.webp",
+    ],
+
+    category: "Earcuffs",
+    collection: "daily-wear",
+
+    isNew: true,
+    isBestSeller: false,
+
+    material: "925 Sterling Silver",
+    weight: "3g",
+    dimensions: "Standard",
+
+    description:
+      "Intricately designed silver Ear Cuffs suitable for pooja and spiritual spaces.",
+
+    rating: 4.9,
+    reviews: 23,
+
+    inStock: true,
+    stock: 4,
+  },
+  {
+    id: 21,
+    name: "Ear Cuffs",
+    price: 4200,
+    originalPrice: 4600,
+
+    image: "/ear-cuffs-3g-2.webp",
+    images: [
+      "/ear-cuffs-3g-2.webp",
+    ],
+
+    category: "Earcuffs",
+    collection: "daily-wear",
+
+    isNew: true,
     isBestSeller: false,
 
     material: "925 Sterling Silver",
@@ -644,7 +735,37 @@ export const products: Product[] = [
     dimensions: "Standard",
 
     description:
-      "Intricately designed silver Srichakra suitable for pooja and spiritual spaces.",
+      "Intricately designed silver Ear Cuffs suitable for pooja and spiritual spaces.",
+
+    rating: 4.9,
+    reviews: 23,
+
+    inStock: true,
+    stock: 4,
+  },
+  {
+    id: 22,
+    name: "Ear Cuffs",
+    price: 4200,
+    originalPrice: 4600,
+
+    image: "/ear-cuffs-3g-3.webp",
+    images: [
+      "/ear-cuffs-3g-3.webp",
+    ],
+
+    category: "Earcuffs",
+    collection: "daily-wear",
+
+    isNew: true,
+    isBestSeller: false,
+
+    material: "925 Sterling Silver",
+    weight: "2g",
+    dimensions: "Standard",
+
+    description:
+      "Intricately designed silver Ear Cuffs suitable for pooja and spiritual spaces.",
 
     rating: 4.9,
     reviews: 23,
