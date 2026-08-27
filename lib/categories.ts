@@ -53,6 +53,18 @@ export const categories: Category[] = [
     image:
       "/5g-Glass.webp",
   },
+  {
+    slug: "bowl",
+    name: "Bowl",
+    image:
+      "/silver-bowl-8g.webp",
+  },
+  {
+    slug: "earcuffs",
+    name: "Earcuffs",
+    image:
+      "/ear-cuffs-3g-1.webp",
+  },
 ];
 
 export function getCategoryBySlug(slug: string) {

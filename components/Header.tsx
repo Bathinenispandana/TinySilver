@@ -28,9 +28,11 @@ import SearchBar from "@/components/SearchBar";
 /* ================= DESIGN TOKENS ================= */
 
 const COLORS = {
-  navy: "#121722",
-  navyRow: "#1B2432",
-  navyScrolled: "rgba(18, 23, 34, 0.92)",
+  // Use ONLY this color for the complete header
+  navy: "#0f172a",
+  navyRow: "#0f172a",
+  navyScrolled: "#0f172a",
+
   gold: "#C9A66B",
   goldDeep: "#B08D4F",
   hairline: "rgba(255,255,255,0.08)",
@@ -69,8 +71,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationMessage, setLocationMessage] = useState("");
 
-  const [isDeliverable, setIsDeliverable] =
-    useState<boolean | null>(null);
+  const [isDeliverable, setIsDeliverable] = useState<boolean | null>(null);
 
   const locationRef = useRef<HTMLDivElement>(null);
 
@@ -80,12 +81,20 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
   const router = useRouter();
 
+  // orders function
+
+  const handleOrdersClick = () => {
+  if (isLoggedIn) {
+    router.push("/orders");
+  } else {
+    onOpenLogin();
+  }
+};
+
   /* ================= LOAD SAVED LOCATION ================= */
 
   useEffect(() => {
-    const savedLocation = localStorage.getItem(
-      "tiny-silver-delivery-location"
-    );
+    const savedLocation = localStorage.getItem("tiny-silver-delivery-location");
 
     if (!savedLocation) return;
 
@@ -193,13 +202,10 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       setIsDeliverable(null);
 
       const response = await fetch(`/api/pincode/${pincode}`);
-
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        setLocationMessage(
-          data.message || "Unable to find this pincode."
-        );
+        setLocationMessage(data.message || "Unable to find this pincode.");
         setIsDeliverable(false);
         return;
       }
@@ -208,7 +214,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
         setLocationDetails(data.location);
         setLocationMessage(
           data.message ||
-            "Currently, we deliver only in Telangana and Andhra Pradesh."
+            "Currently, we deliver only in Telangana and Andhra Pradesh.",
         );
         setIsDeliverable(false);
         return;
@@ -221,21 +227,19 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       setPincode(newLocation.pincode);
 
       setLocationMessage(
-        `Delivery available in ${newLocation.city}, ${newLocation.state}.`
+        `Delivery available in ${newLocation.city}, ${newLocation.state}.`,
       );
 
       setIsDeliverable(true);
 
       localStorage.setItem(
         "tiny-silver-delivery-location",
-        JSON.stringify(newLocation)
+        JSON.stringify(newLocation),
       );
     } catch (error) {
       console.error("Pincode check error:", error);
 
-      setLocationMessage(
-        "Unable to check this pincode. Please try again."
-      );
+      setLocationMessage("Unable to check this pincode. Please try again.");
 
       setIsDeliverable(false);
     } finally {
@@ -253,9 +257,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
     localStorage.removeItem("tiny-silver-delivery-location");
   };
 
-  const handlePincodeKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handlePincodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       checkPincode();
     }
@@ -298,7 +300,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
     isLoggedIn ? router.push("/account") : onOpenLogin();
   };
 
-  /* ================= SHARED SEARCH RESULT LIST ================= */
+  /* ================= SHARED SEARCH RESULTS ================= */
 
   const renderResults = (imgSize: number) => (
     <>
@@ -347,15 +349,11 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       {/* ================= HEADER ================= */}
 
       <header
-        className="sticky top-0 z-50 bg-[#0f172a]/40 p-1 transition-[background-color,box-shadow,backdrop-filter] duration-300"
+        className="sticky top-0 z-50 p-1 transition-shadow duration-300"
         style={{
-          backgroundColor: scrolled
-            ? COLORS.navyScrolled
-            : COLORS.navy,
-          backdropFilter: scrolled ? "blur(12px)" : undefined,
-          boxShadow: scrolled
-            ? "0 12px 32px -16px rgba(0,0,0,0.6)"
-            : "none",
+          // Always #0f172a
+          backgroundColor: COLORS.navy,
+          boxShadow: scrolled ? "0 12px 32px -16px rgba(0,0,0,0.6)" : "none",
         }}
       >
         {/* ================= MAIN HEADER ROW ================= */}
@@ -379,7 +377,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               />
             </Link>
 
-            {/* ================= DELIVER TO DESKTOP ================= */}
+            {/* ================= DESKTOP LOCATION ================= */}
 
             <div
               ref={locationRef}
@@ -387,9 +385,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
             >
               <button
                 type="button"
-                onClick={() =>
-                  setLocationOpen((previous) => !previous)
-                }
+                onClick={() => setLocationOpen((previous) => !previous)}
                 aria-expanded={locationOpen}
                 className="flex items-center gap-3 rounded-md px-3 py-2 text-left text-white/90 transition-all duration-200 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
               >
@@ -399,9 +395,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 />
 
                 <span className="flex flex-col items-start leading-tight">
-                  <span className="text-[11px] text-white/50">
-                    Deliver to
-                  </span>
+                  <span className="text-[11px] text-white/50">Deliver to</span>
 
                   <span className="max-w-[115px] truncate text-[14px] font-semibold text-white">
                     {selectedLocation}
@@ -416,24 +410,16 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 />
               </button>
 
-              {/* ================= DESKTOP PINCODE DROPDOWN ================= */}
-
               {locationOpen && (
-                <div
-                  className="absolute left-0 top-full z-[110] mt-3 w-[390px] overflow-hidden rounded-xl border bg-white shadow-2xl"
-                  style={{
-                    borderColor: "rgba(0,0,0,0.08)",
-                  }}
-                >
+                <div className="absolute left-0 top-full z-[110] mt-3 w-[390px] overflow-hidden rounded-xl border border-black/[0.08] bg-white shadow-2xl">
                   <div className="border-b border-black/[0.06] p-5">
                     <h3 className="text-lg font-bold text-[#121722]">
                       Choose your location
                     </h3>
 
                     <p className="mt-1 text-sm leading-relaxed text-slate-500">
-                      Enter your pincode to check delivery availability.
-                      We currently deliver only in Telangana and Andhra
-                      Pradesh.
+                      Enter your pincode to check delivery availability. We
+                      currently deliver only in Telangana and Andhra Pradesh.
                     </p>
                   </div>
 
@@ -443,9 +429,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                         type="text"
                         inputMode="numeric"
                         value={pincode}
-                        onChange={(e) =>
-                          handlePincodeChange(e.target.value)
-                        }
+                        onChange={(e) => handlePincodeChange(e.target.value)}
                         onKeyDown={handlePincodeKeyDown}
                         placeholder="Enter 6-digit pincode"
                         maxLength={6}
@@ -455,10 +439,11 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                       <button
                         type="button"
                         onClick={checkPincode}
-                        disabled={
-                          locationLoading || pincode.length !== 6
-                        }
-                        className="flex h-11 min-w-[82px] items-center justify-center rounded-lg bg-[#121722] px-4 text-sm font-semibold text-white transition hover:bg-[#1B2432] disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={locationLoading || pincode.length !== 6}
+                        className="flex h-11 min-w-[82px] items-center justify-center rounded-lg px-4 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+                        style={{
+                          backgroundColor: COLORS.navy,
+                        }}
                       >
                         {locationLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -469,8 +454,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                     </div>
 
                     <p className="mt-3 text-xs text-slate-500">
-                      Delivery available only in Telangana and Andhra
-                      Pradesh.
+                      Delivery available only in Telangana and Andhra Pradesh.
                     </p>
 
                     {locationMessage && (
@@ -549,17 +533,12 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                     backgroundColor: COLORS.gold,
                   }}
                 >
-                  <Search
-                    className="h-5 w-5 text-[#121722]"
-                    strokeWidth={2}
-                  />
+                  <Search className="h-5 w-5 text-[#121722]" strokeWidth={2} />
                 </button>
               </form>
 
-              {/* ================= LIVE SEARCH RESULTS ================= */}
-
               {searchValue.trim() && (
-                <div className="absolute left-0 top-[50px] z-[100] w-full origin-top overflow-hidden rounded-xl border border-black/5 bg-white shadow-2xl">
+                <div className="absolute left-0 top-[50px] z-[100] w-full overflow-hidden rounded-xl border border-black/5 bg-white shadow-2xl">
                   {searchResults.length > 0 ? (
                     <>
                       {renderResults(44)}
@@ -569,13 +548,12 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                         onClick={() => {
                           router.push(
                             `/products?q=${encodeURIComponent(
-                              searchValue.trim()
-                            )}`
+                              searchValue.trim(),
+                            )}`,
                           );
-
                           setSearchValue("");
                         }}
-                        className="w-full border-t border-black/[0.06] p-3 text-center text-[12px] font-bold uppercase tracking-wide text-[#121722] transition-colors duration-150 hover:bg-[#FBF9F4]"
+                        className="w-full border-t border-black/[0.06] p-3 text-center text-[12px] font-bold uppercase tracking-wide text-[#121722] transition-colors hover:bg-[#FBF9F4]"
                       >
                         View all results for &ldquo;{searchValue}&rdquo;
                       </button>
@@ -595,18 +573,24 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               type="button"
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
-              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors duration-200 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
+              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
             >
-              <Search
-                className="h-[19px] w-[19px]"
-                strokeWidth={1.8}
-              />
+              <Search className="h-[19px] w-[19px]" strokeWidth={1.8} />
             </button>
 
             {/* ================= RIGHT ACTIONS ================= */}
 
             <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-              {/* ================= ACCOUNT DESKTOP ================= */}
+              {/* ================= HOME - FIRST ================= */}
+
+              <Link
+                href="/"
+                className="hidden rounded-md px-4 py-3 text-[14px] font-semibold text-white transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
+              >
+                Home
+              </Link>
+
+              {/* ================= ACCOUNT & LISTS - AFTER HOME ================= */}
 
               <button
                 type="button"
@@ -614,36 +598,30 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
               >
                 <span className="text-[11px] text-white/50">
-                  {isLoggedIn
-                    ? "Welcome back"
-                    : "Hello, sign in"}
+                  {isLoggedIn ? "Welcome back" : "Hello, sign in"}
                 </span>
 
                 <span className="flex items-center gap-0.5 text-[13px] font-semibold">
-                  Account &amp; Lists
-
-                  <ChevronDown
-                    className="h-3.5 w-3.5"
-                    strokeWidth={2}
-                  />
+                  Account
+                  <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
               </button>
 
-              {/* ================= ORDERS DESKTOP ================= */}
+              {/* ================= ORDERS ================= */}
 
               <button
-                type="button"
-                onClick={handleAccountClick}
-                className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
-              >
-                <span className="text-[11px] text-white/50">
-                  Returns
-                </span>
+  type="button"
+  onClick={handleOrdersClick}
+  className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
+>
+  <span className="text-[11px] text-white/50">
+    Your
+  </span>
 
-                <span className="text-[13px] font-semibold">
-                  &amp; Orders
-                </span>
-              </button>
+  <span className="text-[13px] font-semibold">
+    Orders
+  </span>
+</button>
 
               {/* ================= WISHLIST ================= */}
 
@@ -652,10 +630,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 aria-label="Wishlist"
                 className="relative flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
               >
-                <Heart
-                  className="h-[19px] w-[19px]"
-                  strokeWidth={1.6}
-                />
+                <Heart className="h-[19px] w-[19px]" strokeWidth={1.6} />
 
                 {wishlistItems.length > 0 && (
                   <span
@@ -677,10 +652,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 onClick={handleAccountClick}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
               >
-                <User
-                  className="h-[19px] w-[19px]"
-                  strokeWidth={1.6}
-                />
+                <User className="h-[19px] w-[19px]" strokeWidth={1.6} />
 
                 {isLoggedIn && (
                   <span
@@ -731,23 +703,21 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 onClick={() => setMobileMenuOpen(true)}
                 className="flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
               >
-                <Menu
-                  className="h-[20px] w-[20px]"
-                  strokeWidth={1.8}
-                />
+                <Menu className="h-[20px] w-[20px]" strokeWidth={1.8} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* ================= MOBILE DELIVER TO STRIP ================= */}
+        {/* ================= MOBILE DELIVERY STRIP ================= */}
 
         <button
           type="button"
           onClick={() => setMobileLocationOpen(true)}
           className="flex h-9 w-full items-center gap-2 border-t px-4 text-left transition-colors duration-200 hover:bg-white/[0.04] lg:hidden"
           style={{
-            backgroundColor: COLORS.navyRow,
+            // Same #0f172a color
+            backgroundColor: COLORS.navy,
             borderColor: COLORS.hairline,
           }}
         >
@@ -758,9 +728,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
           <span className="text-[11.5px] text-white/70">
             Deliver to{" "}
-            <span className="font-semibold text-white">
-              {selectedLocation}
-            </span>
+            <span className="font-semibold text-white">{selectedLocation}</span>
           </span>
 
           <ChevronDown
@@ -774,16 +742,12 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
       {mobileLocationOpen && (
         <div className="fixed inset-0 z-[100] flex items-end bg-black/60 backdrop-blur-sm lg:hidden">
-          {/* Background Close */}
-
           <button
             type="button"
             aria-label="Close location selector"
             onClick={() => setMobileLocationOpen(false)}
             className="absolute inset-0"
           />
-
-          {/* Bottom Sheet */}
 
           <div
             className="relative z-10 w-full rounded-t-3xl border-t p-5 shadow-2xl"
@@ -792,11 +756,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               borderColor: COLORS.hairline,
             }}
           >
-            {/* Handle */}
-
             <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/20" />
-
-            {/* Header */}
 
             <div className="mb-5">
               <div className="flex items-center justify-between">
@@ -813,17 +773,13 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 <button
                   type="button"
                   aria-label="Close location selector"
-                  onClick={() =>
-                    setMobileLocationOpen(false)
-                  }
-                  className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/[0.08]"
+                  onClick={() => setMobileLocationOpen(false)}
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-white/70 hover:bg-white/[0.08]"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
             </div>
-
-            {/* ================= MOBILE PINCODE INPUT ================= */}
 
             <div className="pb-4">
               <div className="flex gap-2">
@@ -831,9 +787,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                   type="text"
                   inputMode="numeric"
                   value={pincode}
-                  onChange={(e) =>
-                    handlePincodeChange(e.target.value)
-                  }
+                  onChange={(e) => handlePincodeChange(e.target.value)}
                   onKeyDown={handlePincodeKeyDown}
                   placeholder="Enter 6-digit pincode"
                   maxLength={6}
@@ -843,9 +797,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 <button
                   type="button"
                   onClick={checkPincode}
-                  disabled={
-                    locationLoading || pincode.length !== 6
-                  }
+                  disabled={locationLoading || pincode.length !== 6}
                   className="flex h-12 min-w-[82px] items-center justify-center rounded-xl bg-[#C9A66B] px-4 text-sm font-bold text-[#121722] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {locationLoading ? (
@@ -857,8 +809,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               </div>
 
               <p className="mt-3 text-xs leading-relaxed text-white/50">
-                We currently deliver only across Telangana and Andhra
-                Pradesh.
+                We currently deliver only across Telangana and Andhra Pradesh.
               </p>
 
               {locationMessage && (
@@ -879,9 +830,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                     <div>
                       <p
                         className={`text-sm font-medium ${
-                          isDeliverable
-                            ? "text-green-300"
-                            : "text-red-300"
+                          isDeliverable ? "text-green-300" : "text-red-300"
                         }`}
                       >
                         {locationMessage}
@@ -889,8 +838,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
                       {locationDetails && (
                         <p className="mt-1 text-xs text-white/50">
-                          {locationDetails.district},{" "}
-                          {locationDetails.state} -{" "}
+                          {locationDetails.district}, {locationDetails.state} -{" "}
                           {locationDetails.pincode}
                         </p>
                       )}
@@ -917,8 +865,6 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
       {searchOpen && (
         <div className="fixed inset-0 z-[75] flex items-start justify-center bg-black/60 px-4 pt-20 backdrop-blur-sm">
-          {/* Background Close */}
-
           <button
             type="button"
             aria-label="Close search"
@@ -926,12 +872,10 @@ export default function Header({ onOpenLogin }: HeaderProps) {
             className="absolute inset-0"
           />
 
-          {/* Search Box */}
-
           <div
             className="relative w-full max-w-xl rounded-2xl border p-4 shadow-2xl"
             style={{
-              backgroundColor: COLORS.navyRow,
+              backgroundColor: COLORS.navy,
               borderColor: COLORS.hairline,
             }}
           >
@@ -958,10 +902,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                     backgroundColor: COLORS.gold,
                   }}
                 >
-                  <Search
-                    className="h-5 w-5 text-[#121722]"
-                    strokeWidth={2}
-                  />
+                  <Search className="h-5 w-5 text-[#121722]" strokeWidth={2} />
                 </button>
               </form>
 
@@ -969,16 +910,11 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 type="button"
                 aria-label="Close search"
                 onClick={closeSearch}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/90 transition-colors duration-200 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/90 hover:bg-white/[0.08]"
               >
-                <X
-                  className="h-[18px] w-[18px]"
-                  strokeWidth={1.6}
-                />
+                <X className="h-[18px] w-[18px]" strokeWidth={1.6} />
               </button>
             </div>
-
-            {/* ================= MOBILE LIVE SEARCH RESULTS ================= */}
 
             {searchValue.trim() && (
               <div className="mt-3 max-h-[60vh] overflow-y-auto rounded-xl bg-white">
@@ -991,14 +927,14 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                       onClick={() => {
                         router.push(
                           `/products?q=${encodeURIComponent(
-                            searchValue.trim()
-                          )}`
+                            searchValue.trim(),
+                          )}`,
                         );
 
                         setSearchOpen(false);
                         setSearchValue("");
                       }}
-                      className="w-full p-3 text-center text-[12px] font-bold uppercase tracking-wide text-[#121722] transition-colors duration-150 hover:bg-[#FBF9F4]"
+                      className="w-full p-3 text-center text-[12px] font-bold uppercase tracking-wide text-[#121722] hover:bg-[#FBF9F4]"
                     >
                       View all results for &ldquo;{searchValue}&rdquo;
                     </button>

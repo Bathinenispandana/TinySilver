@@ -1,26 +1,20 @@
 import Link from "next/link";
-import { Camera, Users, MapPin } from "lucide-react";
 import Image from "next/image";
+import { MapPin, Mail, Phone } from "lucide-react";
 
 const SHOP_LINKS = [
-  { href: "/products", label: "All Products" },
+  { href: "/products", label: "All Jewellery" },
   { href: "/new-arrivals", label: "New Arrivals" },
   { href: "/products?sort=rating", label: "Best Sellers" },
   { href: "/collections", label: "Collections" },
 ];
 
-const CARE_LINKS = [
-  { href: "/account", label: "Contact Us" },
-  { href: "/account", label: "Shipping" },
-  { href: "/account", label: "Returns" },
-  { href: "/account", label: "FAQs" },
-];
-
-const COMPANY_LINKS = [
-  { href: "/", label: "About Us" },
-  { href: "/", label: "Our Story" },
-  { href: "/", label: "Careers" },
-];
+// const CARE_LINKS = [
+//   { href: "/contact", label: "Contact Us" },
+//   { href: "/shipping", label: "Shipping & Delivery" },
+//   { href: "/returns", label: "Returns & Exchanges" },
+//   { href: "/faqs", label: "Frequently Asked Questions" },
+// ];
 
 function FooterColumn({
   title,
@@ -31,16 +25,18 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h4 className="text-xs font-semibold uppercase tracking-wider text-white/90">
+      <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
         {title}
       </h4>
-      <ul className="mt-4 flex flex-col gap-2.5">
-        {links.map((link, i) => (
-          <li key={`${link.label}-${i}`}>
+
+      <ul className="mt-5 space-y-3">
+        {links.map((link) => (
+          <li key={link.label}>
             <Link
               href={link.href}
-              className="text-sm text-[#c5c6cc] hover:text-white transition-colors duration-300"
+              className="group inline-flex items-center text-sm text-slate-400 transition-colors duration-300 hover:text-white"
             >
+              <span className="h-px w-0 bg-white transition-all duration-300 group-hover:mr-2 group-hover:w-3" />
               {link.label}
             </Link>
           </li>
@@ -52,70 +48,106 @@ function FooterColumn({
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
-          <div className="col-span-2 md:col-span-2">
-            <Link href="/">
+    <footer className="mt-16 overflow-hidden bg-[#081426] text-white">
+      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-20 lg:grid-cols-12">
+          {/* Brand Section */}
+          <div className="lg:col-span-4">
+            <Link
+              href="/"
+              className="inline-block transition-opacity duration-300 hover:opacity-80"
+            >
               <Image
                 src="/tinysilver.webp"
-                alt="Silver Jewellery Logo"
-                width={50}
-                height={15}
+                alt="Silver Jewellery"
+                width={100}
+                height={40}
                 className="h-auto w-auto"
               />
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-[#c5c6cc] leading-relaxed">
-              Handcrafted 925 silver ornaments designed to become part of
-              your story. Timeless silver, modern elegance.
+
+            <p className="mt-5 max-w-sm text-sm leading-7 text-slate-400">
+              Discover beautifully handcrafted 925 sterling silver jewellery
+              designed to celebrate your everyday moments and timeless memories.
             </p>
-            <div className="mt-5 flex items-center gap-2 text-sm text-[#c5c6cc]">
-              <MapPin className="h-4 w-4 shrink-0" />
-              Crafted in India, worn worldwide
-            </div>
-            <div className="mt-6 flex items-center gap-3">
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:border-white/60 transition-all duration-300"
-              >
-                <Camera className="h-4 w-4 text-white" />
-              </a>
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:border-white/60 transition-all duration-300"
-              >
-                <Users className="h-4 w-4 text-white" />
-              </a>
-              <a
-                href="https://pinterest.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Pinterest"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:border-white/60 transition-all duration-300"
-              >
-                <span className="text-white text-xs font-bold">P</span>
-              </a>
-            </div>
+
+            
           </div>
 
-          <FooterColumn title="Shop" links={SHOP_LINKS} />
-          <FooterColumn title="Customer Care" links={CARE_LINKS} />
-          <FooterColumn title="Company" links={COMPANY_LINKS} />
+          {/* Footer Links */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3 lg:col-span-8">
+            {/* Shop */}
+            <FooterColumn title="Shop" links={SHOP_LINKS} />
+
+            {/* Customer Care */}
+            {/* <FooterColumn title="Customer Care" links={CARE_LINKS} /> */}
+
+            {/* Contact Us */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
+                Contact Us
+              </h4>
+
+              <div className="mt-5 space-y-4">
+                {/* Email */}
+                <a
+                  href="mailto:tinysilvercollection@gmail.com"
+                  className="group flex items-start gap-3 text-sm text-slate-400 transition-colors duration-300 hover:text-white"
+                >
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-slate-300 transition-colors duration-300 group-hover:text-white" />
+                  <span className="break-all">
+                    tinysilvercollection@gmail.com
+                  </span>
+                </a>
+
+                {/* Phone */}
+                <a
+                  href="tel:+918247862319"
+                  className="group flex items-center gap-3 text-sm text-slate-400 transition-colors duration-300 hover:text-white"
+                >
+                  <Phone className="h-4 w-4 shrink-0 text-slate-300 transition-colors duration-300 group-hover:text-white" />
+                  <span>+91 8247862319</span>
+                </a>
+
+                {/* Location */}
+                <a
+                  href="https://maps.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View location on Google Maps"
+                  className="group flex items-start gap-3 text-sm leading-6 text-slate-400 transition-colors duration-300 hover:text-white"
+                >
+                  <MapPin className="mt-1 h-4 w-4 shrink-0 text-slate-300 transition-colors duration-300 group-hover:text-white" />
+                  <span>Hyderabad, Telangana</span>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#c5c6cc]">
-            © 2026 Silver Jewellery. All Rights Reserved.
+        {/* Bottom Footer */}
+        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+          <p className="text-xs text-slate-500">
+            © {new Date().getFullYear()} Tiny Silver Collection. All rights reserved.
           </p>
-          <p className="text-xs text-[#c5c6cc]">
-            925 Sterling Silver · Crafted with Care
-          </p>
+
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-slate-500 sm:justify-end">
+            <Link
+              href="/privacy-policy"
+              className="transition-colors duration-300 hover:text-white"
+            >
+              Privacy Policy
+            </Link>
+
+            <Link
+              href="/terms"
+              className="transition-colors duration-300 hover:text-white"
+            >
+              Terms & Conditions
+            </Link>
+
+            <span>925 Sterling Silver</span>
+          </div>
         </div>
       </div>
     </footer>
