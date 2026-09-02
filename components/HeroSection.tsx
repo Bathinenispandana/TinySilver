@@ -5,8 +5,6 @@ import VerticalImageCarousel, {
   CarouselImage,
 } from "@/components/Verticalimagecarousal";
 
-// Example data — swap these src values for your own asset paths
-// (e.g. images placed in /public and referenced as "/kumkum-box.webp").
 const heroImages: CarouselImage[] = [
   {
     id: 1,
