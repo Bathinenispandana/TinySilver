@@ -24,7 +24,7 @@ export default function CollectionsPage() {
           <CollectionCard
             key={collection.slug}
             collection={collection}
-            productCount={
+            productCount={ 
               products.filter((p) => p.collection === collection.name)
                 .length
             }
