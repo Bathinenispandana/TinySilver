@@ -28,11 +28,11 @@ export default function BestSellers() {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10">
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10">
           {bestSellers.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
+        </div>  
       </section>
   )
 }

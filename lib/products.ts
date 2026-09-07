@@ -593,9 +593,9 @@ export const products: Product[] = [
     price: 4200,
     originalPrice: 4500,
 
-    image: "/2g-peepal-leaf.webp",
+    image: "/2g-Peepal-leaf.webp",
     images: [
-      "/2g-peepal-leaf.webp",
+      "/2g-Peepal-leaf.webp",
     ],
 
     category: "Leaf",
