@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -30,7 +31,7 @@ export function applyFilters(
   filters: FilterState
 ) {
   return products.filter((p) => {
-    // Category - only one selected
+    // Category
     if (
       filters.categories.length > 0 &&
       !filters.categories.includes(p.category)
@@ -38,7 +39,7 @@ export function applyFilters(
       return false;
     }
 
-    // Collection - only one selected
+    // Collection
     if (
       filters.collections.length > 0 &&
       !filters.collections.includes(p.collection)
@@ -51,7 +52,7 @@ export function applyFilters(
       return false;
     }
 
-    // Material - multiple selections allowed
+    // Material
     if (
       filters.materials.length > 0 &&
       !filters.materials.some((m) =>
@@ -140,6 +141,7 @@ export default function FilterSidebar({
    * Material:
    * Multiple options can be selected.
    */
+
   const toggleArrayValue = (
     key: "categories" | "collections" | "materials",
     value: string
@@ -147,7 +149,7 @@ export default function FilterSidebar({
     const current = filters[key];
 
     // CATEGORY & COLLECTION
-    // Only allow one selection at a time.
+    // Only one selection allowed.
     if (
       key === "categories" ||
       key === "collections"
@@ -165,7 +167,7 @@ export default function FilterSidebar({
     }
 
     // MATERIAL
-    // Multiple selections are allowed.
+    // Multiple selections allowed.
     const next = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
@@ -196,52 +198,102 @@ export default function FilterSidebar({
 
       {/* CATEGORY */}
       <FilterSection title="Category">
-        {categories.map((c) => (
-          <label
-            key={c.slug}
-            className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
-          >
-            <input
-              type="radio"
-              name="category"
-              checked={filters.categories.includes(c.name)}
-              onChange={() =>
-                toggleArrayValue(
-                  "categories",
-                  c.name
-                )
-              }
-              className="h-4 w-4 border-[#c5c6cc] accent-[#0f172a]"
-            />
+        {categories.map((c) => {
+          const isSelected =
+            filters.categories.includes(c.name);
 
-            {c.name}
-          </label>
-        ))}
+          return (
+            <label
+              key={c.slug}
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
+            >
+              {/* Hidden native radio */}
+              <input
+                type="radio"
+                name="category"
+                checked={isSelected}
+                onChange={() =>
+                  toggleArrayValue(
+                    "categories",
+                    c.name
+                  )
+                }
+                className="sr-only"
+              />
+
+              {/* Custom radio */}
+              <span
+                className={`
+                  flex h-4 w-4 shrink-0 items-center justify-center
+                  rounded-full
+                  border-2 border-black
+                  transition-all duration-200
+                  ${
+                    isSelected
+                      ? "bg-black"
+                      : "bg-white"
+                  }
+                `}
+              >
+                {isSelected && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                )}
+              </span>
+
+              <span>{c.name}</span>
+            </label>
+          );
+        })}
       </FilterSection>
 
       {/* COLLECTION */}
       <FilterSection title="Collection">
-        {collections.map((c) => (
-          <label
-            key={c.slug}
-            className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
-          >
-            <input
-              type="radio"
-              name="collection"
-              checked={filters.collections.includes(c.name)}
-              onChange={() =>
-                toggleArrayValue(
-                  "collections",
-                  c.name
-                )
-              }
-              className="h-4 w-4 border-[#c5c6cc] accent-[#0f172a]"
-            />
+        {collections.map((c) => {
+          const isSelected =
+            filters.collections.includes(c.name);
 
-            {c.name}
-          </label>
-        ))}
+          return (
+            <label
+              key={c.slug}
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
+            >
+              {/* Hidden native radio */}
+              <input
+                type="radio"
+                name="collection"
+                checked={isSelected}
+                onChange={() =>
+                  toggleArrayValue(
+                    "collections",
+                    c.name
+                  )
+                }
+                className="sr-only"
+              />
+
+              {/* Custom radio */}
+              <span
+                className={`
+                  flex h-4 w-4 shrink-0 items-center justify-center
+                  rounded-full
+                  border-2 border-black
+                  transition-all duration-200
+                  ${
+                    isSelected
+                      ? "bg-black"
+                      : "bg-white"
+                  }
+                `}
+              >
+                {isSelected && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                )}
+              </span>
+
+              <span>{c.name}</span>
+            </label>
+          );
+        })}
       </FilterSection>
 
       {/* PRICE */}
@@ -290,7 +342,12 @@ export default function FilterSidebar({
                   m
                 )
               }
-              className="h-4 w-4 rounded border-[#c5c6cc] accent-[#0f172a]"
+              className="
+                h-4 w-4
+                rounded
+                border-[#c5c6cc]
+                accent-[#0f172a]
+              "
             />
 
             {m}
@@ -313,7 +370,12 @@ export default function FilterSidebar({
                 inStockOnly: !filters.inStockOnly,
               })
             }
-            className="h-4 w-4 rounded border-[#c5c6cc] accent-[#0f172a]"
+            className="
+              h-4 w-4
+              rounded
+              border-[#c5c6cc]
+              accent-[#0f172a]
+            "
           />
 
           In Stock Only
@@ -325,29 +387,56 @@ export default function FilterSidebar({
         title="Rating"
         defaultOpen={false}
       >
-        {[4, 3, 2].map((r) => (
-          <label
-            key={r}
-            className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
-          >
-            <input
-              type="radio"
-              name="minRating"
-              checked={filters.minRating === r}
-              onChange={() =>
-                onChange({
-                  ...filters,
-                  minRating: r,
-                })
-              }
-              className="h-4 w-4 border-[#c5c6cc] accent-[#0f172a]"
-            />
+        {[4, 3, 2].map((r) => {
+          const isSelected =
+            filters.minRating === r;
 
-            {r}★ &amp; above
-          </label>
-        ))}
+          return (
+            <label
+              key={r}
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]"
+            >
+              {/* Hidden native radio */}
+              <input
+                type="radio"
+                name="minRating"
+                checked={isSelected}
+                onChange={() =>
+                  onChange({
+                    ...filters,
+                    minRating: r,
+                  })
+                }
+                className="sr-only"
+              />
 
+              {/* Custom radio */}
+              <span
+                className={`
+                  flex h-4 w-4 shrink-0 items-center justify-center
+                  rounded-full
+                  border-2 border-black
+                  transition-all duration-200
+                  ${
+                    isSelected
+                      ? "bg-black"
+                      : "bg-white"
+                  }
+                `}
+              >
+                {isSelected && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                )}
+              </span>
+
+              <span>{r}★ &amp; above</span>
+            </label>
+          );
+        })}
+
+        {/* ANY RATING */}
         <label className="flex cursor-pointer items-center gap-2.5 text-sm text-[#0f172a]">
+          {/* Hidden native radio */}
           <input
             type="radio"
             name="minRating"
@@ -358,10 +447,29 @@ export default function FilterSidebar({
                 minRating: 0,
               })
             }
-            className="h-4 w-4 border-[#c5c6cc] accent-[#0f172a]"
+            className="sr-only"
           />
 
-          Any rating
+          {/* Custom radio */}
+          <span
+            className={`
+              flex h-4 w-4 shrink-0 items-center justify-center
+              rounded-full
+              border-2 border-black
+              transition-all duration-200
+              ${
+                filters.minRating === 0
+                  ? "bg-black"
+                  : "bg-white"
+              }
+            `}
+          >
+            {filters.minRating === 0 && (
+              <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            )}
+          </span>
+
+          <span>Any rating</span>
         </label>
       </FilterSection>
 

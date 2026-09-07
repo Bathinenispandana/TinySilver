@@ -7,13 +7,20 @@ type LocationData = {
   pincode: string;
   state: string;
   district: string;
-  city: string;
+  locality?: string;
+};
+
+type Locality = {
+  name: string;
+  block: string | null;
+  branchType: string | null;
 };
 
 export default function DeliveryLocation() {
   const [isOpen, setIsOpen] = useState(false);
   const [pincode, setPincode] = useState("");
   const [location, setLocation] = useState<LocationData | null>(null);
+  const [localities, setLocalities] = useState<Locality[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [isDeliverable, setIsDeliverable] = useState<boolean | null>(null);
@@ -30,7 +37,7 @@ export default function DeliveryLocation() {
         setIsDeliverable(parsed.deliverable);
         setMessage(
           parsed.deliverable
-            ? `Delivery available in ${parsed.location.city}.`
+            ? `Delivery available in ${parsed.location.locality || parsed.location.district}.`
             : "Currently unavailable for this location."
         );
       } catch {
@@ -46,6 +53,7 @@ export default function DeliveryLocation() {
     setMessage("");
     setIsDeliverable(null);
     setLocation(null);
+    setLocalities([]);
   };
 
   const checkPincode = async () => {
@@ -59,6 +67,7 @@ export default function DeliveryLocation() {
       setLoading(true);
       setMessage("");
       setLocation(null);
+      setLocalities([]);
 
       const response = await fetch(`/api/pincode/${pincode}`);
       const data = await response.json();
@@ -74,24 +83,38 @@ export default function DeliveryLocation() {
       setMessage(data.message);
 
       if (data.deliverable) {
-        localStorage.setItem(
-          "deliveryLocation",
-          JSON.stringify({
-            location: data.location,
-            deliverable: true,
-          })
-        );
-      } else {
-        localStorage.removeItem("deliveryLocation");
+        setLocalities(data.localities || []);
       }
     } catch (error) {
       console.error(error);
-
       setIsDeliverable(false);
       setMessage("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const selectLocality = (locality: Locality) => {
+    if (!location) return;
+
+    const finalLocation = {
+      ...location,
+      locality: locality.name,
+    };
+
+    setLocation(finalLocation);
+    setLocalities([]);
+    setMessage(`Delivery available in ${locality.name}, ${location.district}.`);
+
+    localStorage.setItem(
+      "deliveryLocation",
+      JSON.stringify({
+        location: finalLocation,
+        deliverable: true,
+      })
+    );
+
+    setIsOpen(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -103,6 +126,7 @@ export default function DeliveryLocation() {
   const clearLocation = () => {
     setPincode("");
     setLocation(null);
+    setLocalities([]);
     setMessage("");
     setIsDeliverable(null);
 
@@ -110,7 +134,7 @@ export default function DeliveryLocation() {
   };
 
   const displayLocation = location
-    ? `${location.city}, ${location.state}`
+    ? location.locality || location.district
     : "India";
 
   return (
@@ -178,11 +202,7 @@ export default function DeliveryLocation() {
               disabled={loading || pincode.length !== 6}
               className="flex h-11 min-w-[80px] items-center justify-center rounded-lg bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Check"
-              )}
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Check"}
             </button>
           </div>
 
@@ -201,21 +221,38 @@ export default function DeliveryLocation() {
                   <X className="mt-0.5 h-4 w-4 shrink-0" />
                 )}
 
-                <div>
-                  <p>{message}</p>
-
-                  {location && (
-                    <p className="mt-1 font-medium">
-                      {location.district}, {location.state} -{" "}
-                      {location.pincode}
-                    </p>
-                  )}
-                </div>
+                <p>{message}</p>
               </div>
             </div>
           )}
 
-          {location && isDeliverable && (
+          {/* LOCALITY PICKER — shown when the pincode maps to multiple areas */}
+          {isDeliverable && localities.length > 0 && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm font-medium text-slate-700">
+                Select your exact area:
+              </p>
+
+              <div className="max-h-48 space-y-1 overflow-y-auto pr-1">
+                {localities.map((loc) => (
+                  <button
+                    key={loc.name}
+                    onClick={() => selectLocality(loc)}
+                    className="flex w-full items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-left text-sm text-slate-700 transition hover:border-slate-900 hover:bg-slate-50"
+                  >
+                    <span>{loc.name}</span>
+                    {loc.block && (
+                      <span className="text-xs text-slate-400">
+                        {loc.block}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {location?.locality && isDeliverable && (
             <button
               onClick={clearLocation}
               className="mt-4 text-sm font-medium text-slate-600 underline hover:text-slate-900"

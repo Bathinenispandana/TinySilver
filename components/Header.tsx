@@ -592,7 +592,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
               {/* ================= ACCOUNT & LISTS - AFTER HOME ================= */}
 
-              {/* <button
+              <button
                 type="button"
                 onClick={handleAccountClick}
                 className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
@@ -605,7 +605,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                   Account
                   <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
-              </button> */}
+              </button>
 
               {/* ================= ORDERS ================= */}
 
