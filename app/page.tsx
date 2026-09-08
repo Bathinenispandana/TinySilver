@@ -3,7 +3,7 @@ import Link from "next/link";
 import Category from "@/components/Category";
 import Arrivals from "@/components/Arrivals";
 import BestSellers from "@/components/BestSellers";
-import CollectionItems from "@/components/CollectionItems";
+// import CollectionItems from "@/components/CollectionItems";
 import HeroSection from "@/components/HeroSection";
 import { ArrowRight } from "lucide-react";
 import { products } from "@/lib/products";
@@ -75,7 +75,7 @@ export default function Home() {
       <BestSellers />
 
       {/* COLLECTIONS */}
-      <CollectionItems />
+      {/* <CollectionItems /> */}
       {/* <DeliveryLocation /> */}
     </div>
   );

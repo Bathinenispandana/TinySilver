@@ -79,6 +79,8 @@
   --color-brand-dark: var(--brand-dark);
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-silver: var(--brand-silver);
+  --color-product-text: #49496c;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
