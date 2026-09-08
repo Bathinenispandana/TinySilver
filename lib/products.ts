@@ -73,7 +73,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2.5g",
     dimensions: "Small",
 
@@ -104,7 +104,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Medium",
 
@@ -135,7 +135,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "8g",
     dimensions: "Large",
 
@@ -171,7 +171,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Small",
 
@@ -202,7 +202,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "9g",
     dimensions: "Medium",
 
@@ -238,7 +238,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Small",
 
@@ -274,7 +274,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "3g",
     dimensions: "Adjustable",
 
@@ -305,7 +305,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "3g",
     dimensions: "Adjustable",
 
@@ -336,7 +336,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "4g",
     dimensions: "Adjustable",
 
@@ -367,7 +367,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "3g",
     dimensions: "Adjustable",
 
@@ -403,7 +403,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "1g",
     dimensions: "Small",
 
@@ -434,7 +434,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Medium",
 
@@ -465,7 +465,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: true,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Large",
 
@@ -501,7 +501,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Standard",
 
@@ -537,7 +537,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "5g",
     dimensions: "Standard",
 
@@ -573,7 +573,7 @@ export const products: Product[] = [
     isNew: false,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Standard",
 
@@ -604,7 +604,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Standard",
 
@@ -640,7 +640,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Standard", 
 
@@ -670,7 +670,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "8g",
     dimensions: "Standard",
 
@@ -700,7 +700,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "3g",
     dimensions: "Standard",
 
@@ -730,7 +730,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Standard",
 
@@ -760,7 +760,7 @@ export const products: Product[] = [
     isNew: true,
     isBestSeller: false,
 
-    material: "925 Sterling Silver",
+    material: "Silver",
     weight: "2g",
     dimensions: "Standard",
 
