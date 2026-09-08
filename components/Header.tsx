@@ -28,10 +28,9 @@ import SearchBar from "@/components/SearchBar";
 /* ================= DESIGN TOKENS ================= */
 
 const COLORS = {
-  // Use ONLY this color for the complete header
-  navy: "#0f172a",
-  navyRow: "#0f172a",
-  navyScrolled: "#0f172a",
+  navy: "#25314d",
+  navyRow: "#25314d",
+  navyScrolled: "#25314d",
 
   gold: "#C9A66B",
   goldDeep: "#B08D4F",
