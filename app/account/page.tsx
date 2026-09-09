@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useToast } from "@/context/ToastContext";
 import { formatPrice } from "@/lib/utils";
+import AddressManager from "@/components/AddressManager";
 
 type Tab =
   | "profile"
@@ -319,30 +320,7 @@ export default function AccountPage() {
 
           {activeTab === "addresses" && (
             <div>
-              <h2 className="text-lg font-semibold text-[#0f172a]">
-                Addresses
-              </h2>
-              <div className="mt-6 rounded-lg border border-[#c5c6cc] p-4 max-w-sm">
-                <p className="text-sm font-medium text-[#0f172a]">
-                  {account.name || "Customer"}
-                </p>
-                <p className="mt-1 text-sm text-[#827e9c]">
-                  123 MG Road, Uppal Kalan
-                  <br />
-                  Hyderabad, Telangana 500039
-                  <br />
-                  India
-                </p>
-                <span className="mt-3 inline-block rounded-full bg-[#c5c6cc]/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#0f172a]">
-                  Default
-                </span>
-              </div>
-              <button
-                onClick={() => showToast("Address form coming soon")}
-                className="mt-4 text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-              >
-                + Add New Address
-              </button>
+              <AddressManager />
             </div>
           )}
 
