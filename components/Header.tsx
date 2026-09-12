@@ -28,7 +28,7 @@ import SearchBar from "@/components/SearchBar";
 /* ================= DESIGN TOKENS ================= */
 
 const COLORS = {
-  navy: "#25314d",
+  navy: "#CFCFCF",
   navyRow: "#25314d",
   navyScrolled: "#25314d",
 
@@ -89,11 +89,13 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       onOpenLogin();
     }
   };
-
   /* ================= LOAD SAVED LOCATION ================= */
 
-  useEffect(() => {
-    const savedLocation = localStorage.getItem("tiny-silver-delivery-location");
+useEffect(() => {
+  const loadSavedLocation = () => {
+    const savedLocation = localStorage.getItem(
+      "tiny-silver-delivery-location"
+    );
 
     if (!savedLocation) return;
 
@@ -109,7 +111,12 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
       localStorage.removeItem("tiny-silver-delivery-location");
     }
-  }, []);
+  };
+
+  const timer = setTimeout(loadSavedLocation, 0);
+
+  return () => clearTimeout(timer);
+}, []);
 
   /* ================= LIVE SEARCH ================= */
 
@@ -389,20 +396,20 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 className="flex items-center gap-3 rounded-md px-3 py-2 text-left text-white/90 transition-all duration-200 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
               >
                 <MapPin
-                  className="h-7 w-7 shrink-0 text-white/80"
+                  className="h-7 w-7 shrink-0 text-[#25314d]"
                   strokeWidth={1.8}
                 />
 
                 <span className="flex flex-col items-start leading-tight">
-                  <span className="text-[11px] text-white/50">Deliver to</span>
+                  <span className="text-[11px] text-[#25314d]">Deliver to</span>
 
-                  <span className="max-w-[115px] truncate text-[14px] font-semibold text-white">
+                  <span className="max-w-[115px] truncate text-[14px] font-semibold text-[#25314d]">
                     {selectedLocation}
                   </span>
                 </span>
 
                 <ChevronDown
-                  className={`h-4 w-4 text-white/60 transition-transform duration-300 ${
+                  className={`h-4 w-4 text-[#25314d] transition-transform duration-300 ${
                     locationOpen ? "rotate-180" : ""
                   }`}
                   strokeWidth={2}
@@ -584,7 +591,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
               <Link
                 href="/"
-                className="hidden rounded-md px-4 py-3 text-[14px] font-semibold text-white transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
+                className="hidden rounded-md px-4 py-3 text-[14px] text-[#25314d] font-semibold transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
               >
                 Home
               </Link>
@@ -596,11 +603,11 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 onClick={handleAccountClick}
                 className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
               >
-                <span className="text-[11px] text-white/50">
+                <span className="text-[11px] text-[#25314d]">
                   {isLoggedIn ? "Welcome back" : "Hello, sign in"}
                 </span>
 
-                <span className="flex items-center gap-0.5 text-[13px] font-semibold">
+                <span className="flex items-center text-[#25314d] gap-0.5 text-[13px] font-semibold">
                   Account
                   <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
@@ -613,9 +620,9 @@ export default function Header({ onOpenLogin }: HeaderProps) {
                 onClick={handleOrdersClick}
                 className="hidden flex-col items-start rounded-md px-2 py-1.5 leading-tight text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:flex"
               >
-                <span className="text-[11px] text-white/50">Your</span>
+                <span className="text-[11px] text-[#25314d]">Your</span>
 
-                <span className="text-[13px] font-semibold">Orders</span>
+                <span className="text-[13px] text-[#25314d] font-semibold">Orders</span>
               </button>
 
               {/* ================= WISHLIST ================= */}
@@ -623,7 +630,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               <Link
                 href="/wishlist"
                 aria-label="Wishlist"
-                className="relative flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
+                className="relative flex h-10 w-10 items-center justify-center rounded-full text-[#25314d] transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
               >
                 <Heart className="h-[19px] w-[19px]" strokeWidth={1.6} />
 
@@ -665,7 +672,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
               <Link
                 href="/cart"
                 aria-label="Cart"
-                className="relative flex items-center gap-1 rounded-md px-2 py-1.5 text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
+                className="relative flex items-center gap-1 rounded-md px-2 py-1.5 text-[#25314d] transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50"
               >
                 <span className="relative">
                   <ShoppingBag
@@ -717,17 +724,17 @@ export default function Header({ onOpenLogin }: HeaderProps) {
           }}
         >
           <MapPin
-            className="h-4 w-4 shrink-0 text-white/60"
+            className="h-4 w-4 shrink-0 text-[#25314d]"
             strokeWidth={1.8}
           />
 
-          <span className="text-[11.5px] text-white/70">
+          <span className="text-[11.5px] text-[#25314d]">
             Deliver to{" "}
-            <span className="font-semibold text-white">{selectedLocation}</span>
+            <span className="font-semibold text-[#25314d]">{selectedLocation}</span>
           </span>
 
           <ChevronDown
-            className="ml-auto h-4 w-4 text-white/50"
+            className="ml-auto h-4 w-4 text-[#25314d]"
             strokeWidth={2}
           />
         </button>
