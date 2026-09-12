@@ -332,14 +332,16 @@ export default function AddressManager({ onAddressSelect, selectable = false, se
               <label className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-[#0f172a]">
                 State *
               </label>
-              <input
-                type="text"
+              <select
                 required
                 value={form.state}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
                 className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
-                placeholder="Telangana"
-              />
+              >
+                <option value="" disabled>Select State</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Telangana">Telangana</option>
+              </select>
             </div>
 
             <div>

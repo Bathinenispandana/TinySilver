@@ -1,11 +1,43 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { formatPrice } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
+
+function statusColor(status: string) {
+  if (status === "Delivered") return "text-[#0f172a] bg-[#c5c6cc]/40";
+  if (status === "Shipped") return "text-[#827e9c] bg-[#827e9c]/10";
+  return "text-[#827e9c] bg-[#c5c6cc]/30";
+}
 
 export default function OrdersPage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, account } = useAuth();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn && account?.email) {
+      const fetchOrders = async () => {
+        setLoadingOrders(true);
+        const { data, error } = await supabase
+          .from("orders")
+          .select("*, order_items(*, products(*))")
+          .eq("customer_email", account.email)
+          .order("created_at", { ascending: false });
+        
+        if (!error && data) {
+          setOrders(data);
+        }
+        setLoadingOrders(false);
+      };
+      fetchOrders();
+    }
+  }, [isLoggedIn, account]);
 
   return (
     <main className="min-h-screen bg-[#f8fafc] px-4 py-10">
@@ -57,23 +89,54 @@ export default function OrdersPage() {
               </Link>
             </div>
           ) : (
-            <div className="mt-8 rounded-xl border border-dashed border-slate-300 p-10 text-center">
-              <ShoppingBag className="mx-auto h-10 w-10 text-slate-400" />
-
-              <h2 className="mt-4 text-lg font-semibold text-[#0f172a]">
-                No orders yet
-              </h2>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Your orders will appear here after you make a purchase.
-              </p>
-
-              <Link
-                href="/products"
-                className="mt-5 inline-flex rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1e293b]"
-              >
-                Start Shopping
-              </Link>
+            <div className="mt-8">
+              {loadingOrders ? (
+                <div className="flex justify-center p-10 border border-dashed border-slate-300 rounded-xl">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#0f172a] border-t-transparent"></div>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-300 p-10 text-center">
+                  <ShoppingBag className="mx-auto h-10 w-10 text-slate-400" />
+                  <h2 className="mt-4 text-lg font-semibold text-[#0f172a]">
+                    No orders yet
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Your orders will appear here after you make a purchase.
+                  </p>
+                  <Link
+                    href="/products"
+                    className="mt-5 inline-flex rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1e293b]"
+                  >
+                    Start Shopping
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {orders.map((order) => (
+                    <div
+                      key={order.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-[#c5c6cc] p-4"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-[#0f172a]">
+                          Order #{order.id.split("-")[0].toUpperCase()}
+                        </p>
+                        <p className="text-xs text-[#827e9c]">
+                          Placed on {new Date(order.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="mt-1 text-sm text-[#0f172a]">
+                          {order.order_items?.length} items · {formatPrice(order.total_amount)}
+                        </p>
+                      </div>
+                      <span
+                        className={`self-start sm:self-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(order.status)}`}
+                      >
+                        {order.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

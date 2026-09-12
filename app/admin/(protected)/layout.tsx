@@ -30,7 +30,7 @@ export default async function AdminLayout({
   // 2. Fetch user profile to check role
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, full_name")
     .eq("id", session.user.id)
     .single();
 
@@ -49,16 +49,16 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f5f5f6]">
+    <div className="flex flex-col h-screen bg-[#f5f5f6]">
       {/* Admin Header spans full width */}
-      <AdminHeader email={session.user.email || ""} />
+      <AdminHeader email={session.user.email || ""} fullName={profile?.full_name || "Admin"} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Admin Sidebar */}
         <AdminSidebar />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">
           {children}
         </main>
       </div>

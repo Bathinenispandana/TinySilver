@@ -6,13 +6,11 @@ import {
   MapPin,
   Package,
   Truck,
-  MessageCircle,
   Lock,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { formatPrice } from "@/lib/utils";
-import { sendWhatsAppMessage } from "@/lib/whatsapp";
 import AddressManager from "@/components/AddressManager";
 import { Address } from "@/lib/api/addresses";
 
@@ -45,9 +43,7 @@ export default function CheckoutPage() {
   const deliveryCost =
     delivery === "express"
       ? 249
-      : subtotal >= 2000
-      ? 0
-      : 149;
+      : 0;
 
   const total = subtotal + deliveryCost;
 
@@ -99,7 +95,7 @@ export default function CheckoutPage() {
     );
   }
 
-  const handleWhatsAppOrder = async () => {
+  const handlePayment = async () => {
     if (!customer.fullName.trim() || !customer.email.trim() || !customer.phone.trim()) {
       alert("Please fill in all customer details.");
       return;
@@ -115,55 +111,40 @@ export default function CheckoutPage() {
       await updateAccount({ name: customer.fullName, phone: customer.phone });
     }
 
-    const productDetails = items
-      .map((item, index) => {
-        const itemTotal = item.product.price * item.quantity;
-        return `${index + 1}. ${item.product.name}
-Weight: ${item.product.weight || "N/A"}
-Quantity: ${item.quantity}
-Price: ${formatPrice(item.product.price)}
-Item Total: ${formatPrice(itemTotal)}`;
-      })
-      .join("\n\n");
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer,
+          address_id: selectedAddress.id,
+          delivery_method: delivery,
+          items: items.map(item => ({
+            product_id: item.product.id,
+            quantity: item.quantity,
+            price: item.product.price
+          })),
+        }),
+      });
 
-    const deliveryName =
-      delivery === "express"
-        ? "Express Delivery (1-2 business days)"
-        : "Standard Delivery (4-6 business days)";
+      const data = await response.json();
 
-    const message = `Hello TinySilver Team,
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to initialize payment");
+      }
 
-I would like to place an order. Please find my order details below.
-
-*CUSTOMER DETAILS*
-Name: ${customer.fullName}
-Email: ${customer.email}
-Phone: ${customer.phone}
-
-*DELIVERY ADDRESS*
-${selectedAddress.full_name} (${selectedAddress.phone_number})
-${selectedAddress.address_line1}
-${selectedAddress.address_line2 ? selectedAddress.address_line2 + "\n" : ""}${selectedAddress.city}, ${selectedAddress.state}
-Pincode: ${selectedAddress.postal_code}
-Country: ${selectedAddress.country}
-
-*ORDER DETAILS*
-${productDetails}
-
-*DELIVERY METHOD*
-${deliveryName}
-
-*PAYMENT SUMMARY*
-Subtotal: ${formatPrice(subtotal)}
-Delivery Charges: ${deliveryCost === 0 ? "Free" : formatPrice(deliveryCost)}
-
-*TOTAL AMOUNT: ${formatPrice(total)}*
-
-Please share the payment details or UPI QR code so I can complete the payment.
-
-Thank you.`;
-
-    sendWhatsAppMessage(message);
+      if (data.url) {
+        // Redirect to Zoho Payment Gateway
+        window.location.href = data.url;
+      } else {
+        throw new Error("Invalid response from payment gateway");
+      }
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      alert("Error initializing payment: " + err.message);
+    }
   };
 
   return (
@@ -173,7 +154,7 @@ Thank you.`;
       </h1>
 
       <p className="mt-2 text-sm text-[#827e9c]">
-        Select your delivery address and place your order through WhatsApp.
+        Select your delivery address and proceed to secure payment.
       </p>
 
       <div
@@ -273,7 +254,7 @@ Thank you.`;
                   4-6 business days
                 </span>
                 <span className="mt-2 text-sm font-medium text-[#0f172a]">
-                  {subtotal >= 2000 ? "Free" : "₹149"}
+                  Free
                 </span>
               </label>
 
@@ -372,11 +353,11 @@ Thank you.`;
 
           <button
             type="button"
-            onClick={handleWhatsAppOrder}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#128C7E] shadow-sm"
+            onClick={handlePayment}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#827e9c] shadow-sm"
           >
-            <MessageCircle className="h-5 w-5" />
-            Place Order on WhatsApp
+            <Lock className="h-4 w-4" />
+            Pay Now
           </button>
           
           <p className="mt-4 text-center text-xs text-[#827e9c]">

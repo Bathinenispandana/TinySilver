@@ -62,7 +62,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
   const [mobileLocationOpen, setMobileLocationOpen] = useState(false);
 
   const [pincode, setPincode] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("India");
+  const [selectedLocation, setSelectedLocation] = useState("AP & TG");
 
   const [locationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null);
@@ -76,7 +76,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
   const { itemCount } = useCart();
   const { items: wishlistItems } = useWishlist();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, account } = useAuth();
 
   const router = useRouter();
 
@@ -125,20 +125,20 @@ useEffect(() => {
   const searchResults =
     searchQuery.length > 0
       ? products
-          .filter((product) => {
-            const searchableText = [
-              product.name,
-              product.category,
-              product.collection,
-              product.material,
-            ]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase();
+        .filter((product) => {
+          const searchableText = [
+            product.name,
+            product.category,
+            product.collection,
+            product.material,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
 
-            return searchableText.includes(searchQuery);
-          })
-          .slice(0, 6)
+          return searchableText.includes(searchQuery);
+        })
+        .slice(0, 6)
       : [];
 
   /* ================= SCROLL EFFECT ================= */
@@ -220,7 +220,7 @@ useEffect(() => {
         setLocationDetails(data.location);
         setLocationMessage(
           data.message ||
-            "Currently, we deliver only in Telangana and Andhra Pradesh.",
+          "Currently, we deliver only in Telangana and Andhra Pradesh.",
         );
         setIsDeliverable(false);
         return;
@@ -255,7 +255,7 @@ useEffect(() => {
 
   const clearLocation = () => {
     setPincode("");
-    setSelectedLocation("India");
+    setSelectedLocation("AP & TS");
     setLocationDetails(null);
     setLocationMessage("");
     setIsDeliverable(null);
@@ -465,11 +465,10 @@ useEffect(() => {
 
                     {locationMessage && (
                       <div
-                        className={`mt-4 rounded-lg border p-3 ${
-                          isDeliverable
+                        className={`mt-4 rounded-lg border p-3 ${isDeliverable
                             ? "border-green-200 bg-green-50"
                             : "border-red-200 bg-red-50"
-                        }`}
+                          }`}
                       >
                         <div className="flex gap-2">
                           {isDeliverable ? (
@@ -480,11 +479,10 @@ useEffect(() => {
 
                           <div>
                             <p
-                              className={`text-sm font-medium ${
-                                isDeliverable
+                              className={`text-sm font-medium ${isDeliverable
                                   ? "text-green-700"
                                   : "text-red-700"
-                              }`}
+                                }`}
                             >
                               {locationMessage}
                             </p>
@@ -608,7 +606,7 @@ useEffect(() => {
                 </span>
 
                 <span className="flex items-center text-[#25314d] gap-0.5 text-[13px] font-semibold">
-                  Account
+                  {isLoggedIn && account?.name ? account.name : "Account"}
                   <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
               </button>
@@ -816,11 +814,10 @@ useEffect(() => {
 
               {locationMessage && (
                 <div
-                  className={`mt-4 rounded-xl border p-4 ${
-                    isDeliverable
+                  className={`mt-4 rounded-xl border p-4 ${isDeliverable
                       ? "border-green-400/30 bg-green-400/10"
                       : "border-red-400/30 bg-red-400/10"
-                  }`}
+                    }`}
                 >
                   <div className="flex gap-3">
                     {isDeliverable ? (
@@ -831,9 +828,8 @@ useEffect(() => {
 
                     <div>
                       <p
-                        className={`text-sm font-medium ${
-                          isDeliverable ? "text-green-300" : "text-red-300"
-                        }`}
+                        className={`text-sm font-medium ${isDeliverable ? "text-green-300" : "text-red-300"
+                          }`}
                       >
                         {locationMessage}
                       </p>
