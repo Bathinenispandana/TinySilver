@@ -48,9 +48,9 @@ function FooterColumn({
 
 export default function Footer() {
   return (
-    <footer className="mt-16 overflow-hidden bg-[#081426] text-white">
+    <footer className="overflow-hidden bg-[#081426] text-white">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-20 lg:grid-cols-12">
+        <div className="grid gap-30 lg:grid-cols-12">
           {/* Brand Section */}
           <div className="lg:col-span-4">
             <Link
@@ -69,9 +69,7 @@ export default function Footer() {
             <p className="mt-5 max-w-sm text-sm leading-7 text-slate-400">
               Discover beautifully handcrafted 925 sterling silver jewellery
               designed to celebrate your everyday moments and timeless memories.
-            </p>
-
-            
+            </p>  
           </div>
 
           {/* Footer Links */}
@@ -118,7 +116,7 @@ export default function Footer() {
                   className="group flex items-start gap-3 text-sm leading-6 text-slate-400 transition-colors duration-300 hover:text-white"
                 >
                   <MapPin className="mt-1 h-4 w-4 shrink-0 text-slate-300 transition-colors duration-300 group-hover:text-white" />
-                  <span>Hyderabad, Telangana</span>
+                  <span>Sri Raghavendra Nagar, Kalyanpuri, Uppal, Hyderabad, Telangana 500039</span>
                 </a>
               </div>
             </div>
@@ -145,8 +143,6 @@ export default function Footer() {
             >
               Terms & Conditions
             </Link>
-
-            <span>925 Sterling Silver</span>
           </div>
         </div>
       </div>
