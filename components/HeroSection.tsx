@@ -14,7 +14,16 @@ export default function HeroSection() {
           alt="925 Sterling Silver Collection"
           fill
           priority
-          className="object-cover"
+          className="object-cover hidden sm:block"
+          sizes="w-full"
+        />
+
+        <Image
+          src="/banner-mobile.png"
+          alt="925 Sterling Silver Collection"
+          fill
+          priority
+          className="object-cover sm:hidden block"
           sizes="w-full"
         />
 

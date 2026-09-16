@@ -10,7 +10,7 @@ export default function CategoryCard({
 }) {
   return (
     <div className="group">
-      {/* Image Card */}
+      {/* Image Card */} 
       <Link
         href={`/products?category=${encodeURIComponent(category.name)}`}
         className="relative block aspect-[3/4] overflow-hidden rounded-xl bg-[#f5f5f6]"
