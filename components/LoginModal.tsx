@@ -186,7 +186,7 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
       aria-modal="true"
       aria-labelledby="login-modal-title"
     >
-      <div className="animate-modal-in relative flex max-h-[80vh] w-full max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+      <div className="animate-modal-in relative flex max-h-[85vh] w-full max-w-sm flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
         {/* ================= CLOSE BUTTON ================= */}
 
         <button

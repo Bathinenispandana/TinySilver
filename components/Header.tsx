@@ -28,7 +28,7 @@ import SearchBar from "@/components/SearchBar";
 /* ================= DESIGN TOKENS ================= */
 
 const COLORS = {
-  navy: "#CFCFCF",
+  navy: "#A9A9A9",
   navyRow: "#25314d",
   navyScrolled: "#25314d",
 
@@ -355,9 +355,9 @@ useEffect(() => {
       {/* ================= HEADER ================= */}
 
       <header
-        className="sticky top-0 z-50 p-1 transition-shadow duration-300"
+        className="sticky top-0 z-50 w-full p-1 transition-shadow duration-300"
         style={{
-          // Always #0f172a
+          // Header background #A9A9A9
           backgroundColor: COLORS.navy,
           boxShadow: scrolled ? "0 12px 32px -16px rgba(0,0,0,0.6)" : "none",
         }}
@@ -579,7 +579,7 @@ useEffect(() => {
               type="button"
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
-              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
+              className="ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#25314d] transition-colors hover:bg-black/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
             >
               <Search className="h-[19px] w-[19px]" strokeWidth={1.8} />
             </button>
@@ -652,7 +652,7 @@ useEffect(() => {
                 type="button"
                 aria-label={isLoggedIn ? "Account" : "Log in"}
                 onClick={handleAccountClick}
-                className="relative flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
+                className="relative flex h-10 w-10 items-center justify-center rounded-full text-[#25314d] transition-colors duration-150 hover:bg-black/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
               >
                 <User className="h-[19px] w-[19px]" strokeWidth={1.6} />
 
@@ -703,7 +703,7 @@ useEffect(() => {
                 type="button"
                 aria-label="Open menu"
                 onClick={() => setMobileMenuOpen(true)}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-white/90 transition-colors duration-150 hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-[#25314d] transition-colors duration-150 hover:bg-black/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A66B]/50 lg:hidden"
               >
                 <Menu className="h-[20px] w-[20px]" strokeWidth={1.8} />
               </button>
@@ -718,7 +718,7 @@ useEffect(() => {
           onClick={() => setMobileLocationOpen(true)}
           className="flex h-9 w-full items-center gap-2 border-t px-4 text-left transition-colors duration-200 hover:bg-white/[0.04] lg:hidden"
           style={{
-            // Same #0f172a color
+            // Same #A9A9A9 color
             backgroundColor: COLORS.navy,
             borderColor: COLORS.hairline,
           }}
