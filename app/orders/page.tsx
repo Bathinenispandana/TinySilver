@@ -16,28 +16,34 @@ function statusColor(status: string) {
 }
 
 export default function OrdersPage() {
-  const { isLoggedIn, account } = useAuth();
+  const { isLoggedIn, account, openLogin } = useAuth();
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn && account?.email) {
+    if (isLoggedIn) {
       const fetchOrders = async () => {
         setLoadingOrders(true);
-        const { data, error } = await supabase
-          .from("orders")
-          .select("*, order_items(*, products(*))")
-          .eq("customer_email", account.email)
-          .order("created_at", { ascending: false });
         
-        if (!error && data) {
-          setOrders(data);
+        // Fetch the active user's ID
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data, error } = await supabase
+            .from("orders")
+            .select("*, order_items(*)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false });
+          
+          if (!error && data) {
+            setOrders(data);
+          }
         }
         setLoadingOrders(false);
       };
       fetchOrders();
     }
-  }, [isLoggedIn, account]);
+  }, [isLoggedIn]);
 
   return (
     <main className="min-h-screen bg-[#f8fafc] px-4 py-10">
@@ -81,12 +87,20 @@ export default function OrdersPage() {
                 Sign in to access your order history.
               </p>
 
-              <Link
-                href="/"
-                className="mt-5 inline-flex rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1e293b]"
-              >
-                Go to Home
-              </Link>
+              <div className="mt-5 flex justify-center gap-3">
+                <button
+                  onClick={openLogin}
+                  className="inline-flex rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1e293b]"
+                >
+                  Sign In
+                </button>
+                <Link
+                  href="/"
+                  className="inline-flex rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] transition hover:bg-slate-50"
+                >
+                  Go to Home
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="mt-8">
@@ -115,24 +129,34 @@ export default function OrdersPage() {
                   {orders.map((order) => (
                     <div
                       key={order.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-[#c5c6cc] p-4"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-200 p-5 transition-shadow hover:shadow-md"
                     >
-                      <div>
-                        <p className="text-sm font-semibold text-[#0f172a]">
+                      <div className="flex flex-col gap-1.5">
+                        <span className="font-bold text-[#0f172a]">
                           Order #{order.id.split("-")[0].toUpperCase()}
-                        </p>
-                        <p className="text-xs text-[#827e9c]">
+                        </span>
+                        <p className="text-sm text-slate-500">
                           Placed on {new Date(order.created_at).toLocaleDateString()}
                         </p>
-                        <p className="mt-1 text-sm text-[#0f172a]">
+                        <p className="mt-1 text-sm font-medium text-[#0f172a]">
                           {order.order_items?.length} items · {formatPrice(order.total_amount)}
                         </p>
                       </div>
-                      <span
-                        className={`self-start sm:self-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(order.status)}`}
-                      >
-                        {order.status}
-                      </span>
+                      
+                      <div className="flex flex-col sm:items-end gap-3 self-start sm:self-center">
+                        <span
+                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusColor(order.status)}`}
+                        >
+                          {order.status}
+                        </span>
+                        <Link 
+                          href={`/orders/${order.id}`}
+                          className="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1"
+                        >
+                          View Details
+                          <span aria-hidden="true">&rarr;</span>
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>

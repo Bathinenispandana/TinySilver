@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { products as catalogProducts } from "@/lib/products"; // Import the static catalog
 import OrdersTable from "./components/OrdersTable";
 
@@ -23,9 +24,9 @@ export default async function AdminOrdersPage() {
   let allOrderItems: any[] = [];
   
   if (userIds.length > 0) {
-    const { data: fetchedProfiles } = await supabase
+    const { data: fetchedProfiles } = await supabaseAdmin
       .from("profiles")
-      .select("id, full_name, email")
+      .select("id, full_name, email, phone")
       .in("id", userIds);
     profiles = fetchedProfiles || [];
   }

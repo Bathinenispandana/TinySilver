@@ -28,13 +28,15 @@ function SuccessContent() {
       {orderId && (
         <div className="bg-[#f8f8f9] rounded-xl p-6 border border-[#c5c6cc] mb-10 max-w-sm mx-auto">
           <p className="text-sm text-[#827e9c] mb-1 uppercase tracking-wider font-semibold">Order Reference ID</p>
-          <p className="text-xl font-mono text-[#0f172a] font-bold">{orderId.split("-")[0].toUpperCase()}</p>
+          <p className="text-xl font-mono text-[#0f172a] font-bold">
+            {orderId.split("-")[0].toUpperCase()}
+          </p>
         </div>
       )}
       
       <div className="flex flex-col sm:flex-row justify-center gap-4">
         <Link
-          href="/account?tab=orders"
+          href="/orders"
           className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0f172a] px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#827e9c]"
         >
           <ShoppingBag className="h-4 w-4" />

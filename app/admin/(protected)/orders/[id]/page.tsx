@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Package, MapPin, CreditCard, User, Truck } from "lucide-react";
@@ -27,14 +28,14 @@ export default async function AdminOrderDetailsPage({
     return notFound();
   }
 
-  // 1b. Fetch Customer Profile manually
-  const { data: profile } = await supabase
+  // 1b. Fetch Customer Profile manually using Admin Client to bypass RLS
+  const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("full_name, email, phone")
     .eq("id", order.user_id)
     .single();
 
-  const customer = profile || { full_name: "Guest", email: "Unknown", phone: "None" };
+  const customer = profile;
 
   // 2. Fetch Order Items
   const { data: orderItems, error: itemsError } = await supabase
@@ -76,8 +77,11 @@ export default async function AdminOrderDetailsPage({
         {/* Order Header Summary */}
         <div className="px-6 py-5 border-b border-[#c5c6cc] bg-[#f8f9fa] flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-lg font-bold text-[#0f172a]">
-              Order {order.id.split("-")[0].toUpperCase()}
+            <h1 className="text-2xl font-bold text-[#0f172a] flex items-center gap-3">
+              Order {order.display_id || "-"}
+              <span className="text-sm font-mono font-normal text-[#827e9c] bg-[#e2e4e9] px-2 py-1 rounded">
+                Ref: {order.id.split("-")[0].toUpperCase()}
+              </span>
             </h1>
             <p className="text-sm text-[#827e9c] mt-1">
               Placed on {new Date(order.created_at).toLocaleString("en-IN")}
@@ -100,9 +104,13 @@ export default async function AdminOrderDetailsPage({
                   <User className="w-4 h-4 text-[#827e9c]" /> Customer
                 </h2>
                 <div className="space-y-1">
-                  <p className="font-medium text-[#0f172a]">{customer?.full_name || "Guest"}</p>
-                  <p className="text-sm text-[#827e9c]">{customer?.email}</p>
-                  <p className="text-sm text-[#827e9c]">{customer?.phone || "No phone provided"}</p>
+                  <p className="font-medium text-[#0f172a]">
+                    {customer?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Guest"}
+                  </p>
+                  <p className="text-sm text-[#827e9c]">{customer?.email || "No email"}</p>
+                  <p className="text-sm text-[#827e9c]">
+                    {customer?.phone || order.shipping_address?.phone_number || order.shipping_address?.phone || "No phone provided"}
+                  </p>
                 </div>
               </section>
 
@@ -141,13 +149,17 @@ export default async function AdminOrderDetailsPage({
                   <MapPin className="w-4 h-4 text-[#827e9c]" /> Shipping Address
                 </h2>
                 <div className="space-y-1 text-sm text-[#0f172a]">
-                  <p className="font-medium">{order.shipping_address.name}</p>
+                  <p className="font-medium">
+                    {order.shipping_address.full_name || order.shipping_address.name}
+                  </p>
                   <p>{order.shipping_address.address_line1}</p>
                   {order.shipping_address.address_line2 && <p>{order.shipping_address.address_line2}</p>}
                   <p>
-                    {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.pincode}
+                    {order.shipping_address.city}, {order.shipping_address.state} {order.shipping_address.postal_code || order.shipping_address.pincode}
                   </p>
-                  <p className="text-[#827e9c] mt-2">Phone: {order.shipping_address.phone}</p>
+                  <p className="text-[#827e9c] mt-2">
+                    Phone: {order.shipping_address.phone_number || order.shipping_address.phone}
+                  </p>
                 </div>
               </section>
 

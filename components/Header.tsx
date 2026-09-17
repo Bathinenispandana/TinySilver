@@ -62,7 +62,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
   const [mobileLocationOpen, setMobileLocationOpen] = useState(false);
 
   const [pincode, setPincode] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("AP & TG");
+  const [selectedLocation, setSelectedLocation] = useState("TG & AP");
 
   const [locationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null);
@@ -91,32 +91,32 @@ export default function Header({ onOpenLogin }: HeaderProps) {
   };
   /* ================= LOAD SAVED LOCATION ================= */
 
-useEffect(() => {
-  const loadSavedLocation = () => {
-    const savedLocation = localStorage.getItem(
-      "tiny-silver-delivery-location"
-    );
+  useEffect(() => {
+    const loadSavedLocation = () => {
+      const savedLocation = localStorage.getItem(
+        "tiny-silver-delivery-location"
+      );
 
-    if (!savedLocation) return;
+      if (!savedLocation) return;
 
-    try {
-      const parsed: LocationDetails = JSON.parse(savedLocation);
+      try {
+        const parsed: LocationDetails = JSON.parse(savedLocation);
 
-      setLocationDetails(parsed);
-      setPincode(parsed.pincode);
-      setSelectedLocation(parsed.city || "India");
-      setIsDeliverable(true);
-    } catch (error) {
-      console.error("Unable to load saved location:", error);
+        setLocationDetails(parsed);
+        setPincode(parsed.pincode);
+        setSelectedLocation(parsed.city || "India");
+        setIsDeliverable(true);
+      } catch (error) {
+        console.error("Unable to load saved location:", error);
 
-      localStorage.removeItem("tiny-silver-delivery-location");
-    }
-  };
+        localStorage.removeItem("tiny-silver-delivery-location");
+      }
+    };
 
-  const timer = setTimeout(loadSavedLocation, 0);
+    const timer = setTimeout(loadSavedLocation, 0);
 
-  return () => clearTimeout(timer);
-}, []);
+    return () => clearTimeout(timer);
+  }, []);
 
   /* ================= LIVE SEARCH ================= */
 
@@ -409,9 +409,8 @@ useEffect(() => {
                 </span>
 
                 <ChevronDown
-                  className={`h-4 w-4 text-[#25314d] transition-transform duration-300 ${
-                    locationOpen ? "rotate-180" : ""
-                  }`}
+                  className={`h-4 w-4 text-[#25314d] transition-transform duration-300 ${locationOpen ? "rotate-180" : ""
+                    }`}
                   strokeWidth={2}
                 />
               </button>
@@ -466,8 +465,8 @@ useEffect(() => {
                     {locationMessage && (
                       <div
                         className={`mt-4 rounded-lg border p-3 ${isDeliverable
-                            ? "border-green-200 bg-green-50"
-                            : "border-red-200 bg-red-50"
+                          ? "border-green-200 bg-green-50"
+                          : "border-red-200 bg-red-50"
                           }`}
                       >
                         <div className="flex gap-2">
@@ -480,8 +479,8 @@ useEffect(() => {
                           <div>
                             <p
                               className={`text-sm font-medium ${isDeliverable
-                                  ? "text-green-700"
-                                  : "text-red-700"
+                                ? "text-green-700"
+                                : "text-red-700"
                                 }`}
                             >
                               {locationMessage}
@@ -815,8 +814,8 @@ useEffect(() => {
               {locationMessage && (
                 <div
                   className={`mt-4 rounded-xl border p-4 ${isDeliverable
-                      ? "border-green-400/30 bg-green-400/10"
-                      : "border-red-400/30 bg-red-400/10"
+                    ? "border-green-400/30 bg-green-400/10"
+                    : "border-red-400/30 bg-red-400/10"
                     }`}
                 >
                   <div className="flex gap-3">
