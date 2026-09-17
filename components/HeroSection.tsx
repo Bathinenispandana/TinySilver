@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function HeroSection() {
   return (
     <section className="max-w-7xl mx-auto relative overflow-hidden">
-      <div className="relative w-full min-h-[350px] sm:min-h-[400px] lg:min-h-[450px]">
+      <div className="relative w-full min-h-[21.875rem] sm:min-h-[400px] lg:min-h-[450px]">
 
         {/* Banner */}
         <Image
