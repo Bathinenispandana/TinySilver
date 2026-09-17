@@ -24,11 +24,6 @@ export default function HeroSection() {
         {/* Text Content - Left Side */}
         <div className="absolute inset-0 flex items-center">
           <div className="px-6 sm:px-10 lg:px-16 max-w-2xl">
-
-            <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#25314d]">
-              925 Sterling Silver
-            </span>
-
             <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] text-[#25314d]">
               Timeless Silver.
               <br />
