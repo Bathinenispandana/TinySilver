@@ -9,12 +9,10 @@ const SHOP_LINKS = [
   { href: "/collections", label: "Collections" },
 ];
 
-// const CARE_LINKS = [
-//   { href: "/contact", label: "Contact Us" },
-//   { href: "/shipping", label: "Shipping & Delivery" },
-//   { href: "/returns", label: "Returns & Exchanges" },
-//   { href: "/faqs", label: "Frequently Asked Questions" },
-// ];
+const CARE_LINKS = [
+  { href: "/shipping-delivery-policy", label: "Shipping & Delivery" },
+  { href: "/refund-cancellation-policy", label: "Refund & Cancellation" },
+];
 
 function FooterColumn({
   title,
@@ -78,7 +76,7 @@ export default function Footer() {
             <FooterColumn title="Shop" links={SHOP_LINKS} />
 
             {/* Customer Care */}
-            {/* <FooterColumn title="Customer Care" links={CARE_LINKS} /> */}
+            <FooterColumn title="Customer Care" links={CARE_LINKS} />
 
             {/* Contact Us */}
             <div>
