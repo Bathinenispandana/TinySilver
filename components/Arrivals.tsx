@@ -9,7 +9,7 @@ export default function Arrivals() {
   const arrivals = products.filter((p) => p.isNew).slice(0, 8);
 
   return (
-    <section className="max-w-7xl mx-auto bg-[#e8e8e8] py-10 sm:py-14">
+    <section className="w-full mx-auto bg-[#e8e8e8] py-10 sm:py-14">
       <div className="px-4 sm:px-6 lg:px-8">
 
         {/* ================= HEADER ================= */}
