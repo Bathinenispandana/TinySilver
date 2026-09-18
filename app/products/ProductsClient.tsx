@@ -40,14 +40,18 @@ export default function ProductsClient({
   const filteredProducts = useMemo(() => {
     let result = applyFilters(allProducts, filters);
     if (query.trim()) {
-      const q = query.trim().toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.collection.toLowerCase().includes(q)
-      );
-    }
+  const q = query.trim().toLowerCase();
+
+  result = result.filter(
+    (p) =>
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.collection.toLowerCase().includes(q) ||
+      p.material?.toLowerCase().includes(q) ||
+      p.weight?.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q)
+  );
+}
     return sortProducts(result, sort);
   }, [allProducts, filters, query, sort]);
 
@@ -71,12 +75,25 @@ export default function ProductsClient({
       </div>
 
       <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-        <SearchBar value={query} onChange={setQuery} className="sm:max-w-sm" />
-        <div className="flex items-center gap-3 sm:ml-auto">
-          <button
-            type="button"
-            onClick={() => setMobileFiltersOpen(true)}
-            className="lg:hidden inline-flex items-center gap-2 rounded-full border border-[#c5c6cc] px-4 py-2.5 text-sm font-medium text-[#0f172a] hover:bg-[#c5c6cc]/30 transition-all duration-300"
+        <SearchBar
+            value={query}
+            onChange={(value) => {
+              setQuery(value);
+
+              if (value.trim()) {
+                setFilters((prev) => ({
+                  ...prev,
+                  categories: [],
+                }));
+              }
+            }}
+            className="sm:max-w-sm"
+          />
+          <div className="flex items-center gap-3 sm:ml-auto">
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen(true)}
+              className="lg:hidden inline-flex items-center gap-2 rounded-full border border-[#c5c6cc] px-4 py-2.5 text-sm font-medium text-[#0f172a] hover:bg-[#c5c6cc]/30 transition-all duration-300"
           >
             <SlidersHorizontal className="h-4 w-4" />
             Filters

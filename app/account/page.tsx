@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,13 +18,14 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useToast } from "@/context/ToastContext";
 import { formatPrice } from "@/lib/utils";
 import AddressManager from "@/components/AddressManager";
+import { createClient } from "@/lib/supabase/client";
+const supabase = createClient();
 
 type Tab =
   | "profile"
   | "orders"
   | "wishlist"
   | "addresses"
-  | "payment"
   | "settings";
 
 const TABS: { id: Tab; label: string; icon: typeof User }[] = [
@@ -32,33 +33,10 @@ const TABS: { id: Tab; label: string; icon: typeof User }[] = [
   { id: "orders", label: "Orders", icon: Package },
   { id: "wishlist", label: "Wishlist", icon: Heart },
   { id: "addresses", label: "Addresses", icon: MapPin },
-  { id: "payment", label: "Payment Methods", icon: CreditCard },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
-const SAMPLE_ORDERS = [
-  {
-    id: "SRZ1024",
-    date: "Aug 10, 2026",
-    item: "Classic Sterling Silver Ring",
-    price: 2499,
-    status: "Delivered",
-  },
-  {
-    id: "SRZ1018",
-    date: "Jul 22, 2026",
-    item: "Oxidised Silver Necklace",
-    price: 4499,
-    status: "Delivered",
-  },
-  {
-    id: "SRZ1009",
-    date: "Jun 30, 2026",
-    item: "Minimal Silver Earrings",
-    price: 1599,
-    status: "Shipped",
-  },
-];
+// Remove SAMPLE_ORDERS
 
 function statusColor(status: string) {
   if (status === "Delivered") return "text-[#0f172a] bg-[#c5c6cc]/40";
@@ -74,6 +52,35 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<Tab>("profile");
   const [form, setForm] = useState(account);
   const [editing, setEditing] = useState(false);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
+  useEffect(() => {
+    if (isLoggedIn && activeTab === "orders") {
+      const fetchOrders = async () => {
+        setLoadingOrders(true);
+        
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data, error } = await supabase
+            .from("orders")
+            .select("*, order_items(*)")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(3);
+          
+          if (!error && data) {
+            setOrders(data);
+          } else {
+            console.error("Error fetching orders:", error);
+          }
+        }
+        setLoadingOrders(false);
+      };
+      fetchOrders();
+    }
+  }, [isLoggedIn, activeTab]);
 
   if (!isLoggedIn) {
     return (
@@ -247,29 +254,57 @@ export default function AccountPage() {
             <div>
               <h2 className="text-lg font-semibold text-[#0f172a]">Orders</h2>
               <div className="mt-6 flex flex-col gap-4">
-                {SAMPLE_ORDERS.map((order) => (
-                  <div
-                    key={order.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-[#c5c6cc] p-4"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-[#0f172a]">
-                        Order #{order.id}
-                      </p>
-                      <p className="text-xs text-[#827e9c]">
-                        Placed on {order.date}
-                      </p>
-                      <p className="mt-1 text-sm text-[#0f172a]">
-                        {order.item} · {formatPrice(order.price)}
-                      </p>
-                    </div>
-                    <span
-                      className={`self-start sm:self-center rounded-full px-3 py-1 text-xs font-medium ${statusColor(order.status)}`}
-                    >
-                      {order.status}
-                    </span>
+                {loadingOrders ? (
+                  <div className="flex justify-center p-8">
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#0f172a] border-t-transparent"></div>
                   </div>
-                ))}
+                ) : orders.length === 0 ? (
+                  <p className="text-sm text-[#827e9c]">You haven't placed any orders yet.</p>
+                ) : (
+                  <>
+                    {orders.map((order) => (
+                    <div
+                      key={order.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-lg border border-[#c5c6cc] p-5 hover:border-[#827e9c] transition-colors duration-300"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <span className="font-semibold text-[#0f172a]">
+                          Order #{order.id.split("-")[0].toUpperCase()}
+                        </span>
+                        <p className="text-xs text-[#827e9c]">
+                          Placed on {new Date(order.created_at).toLocaleDateString()}
+                        </p>
+                        <p className="mt-1 text-sm text-[#0f172a]">
+                          {order.order_items?.length || 0} items · {formatPrice(order.total_amount)}
+                        </p>
+                      </div>
+                      
+                      <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${statusColor(order.status)}`}
+                        >
+                          {order.status}
+                        </span>
+                        <Link 
+                          href={`/orders/${order.id}`}
+                          className="text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors flex items-center gap-1"
+                        >
+                          View Details &rarr;
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="mt-2 text-center sm:text-left">
+                    <Link
+                      href="/orders"
+                      className="inline-flex items-center justify-center rounded-full border border-[#0f172a] text-[#0f172a] text-sm font-medium px-6 py-2.5 hover:bg-[#0f172a] hover:text-white transition-all duration-300"
+                    >
+                      View All Orders
+                    </Link>
+                  </div>
+                </>
+              )}
               </div>
             </div>
           )}
@@ -324,23 +359,7 @@ export default function AccountPage() {
             </div>
           )}
 
-          {activeTab === "payment" && (
-            <div>
-              <h2 className="text-lg font-semibold text-[#0f172a]">
-                Payment Methods
-              </h2>
-              <p className="mt-4 text-sm text-[#827e9c]">
-                No saved payment methods yet. Payment details are entered
-                securely at checkout.
-              </p>
-              <button
-                onClick={() => showToast("Payment method form coming soon")}
-                className="mt-4 text-sm font-medium text-[#0f172a] hover:text-[#827e9c] transition-colors duration-300"
-              >
-                + Add Payment Method
-              </button>
-            </div>
-          )}
+
 
           {activeTab === "settings" && (
             <div>

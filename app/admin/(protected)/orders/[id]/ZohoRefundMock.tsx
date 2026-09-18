@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle, RefreshCcw, DollarSign } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
@@ -14,8 +15,9 @@ export default function ZohoRefundMock({
   const [refundStatus, setRefundStatus] = useState<"NONE" | "PROCESSING" | "SUCCESS" | "ERROR">("NONE");
   const [refundType, setRefundType] = useState<"FULL" | "PARTIAL">("FULL");
   const [partialAmount, setPartialAmount] = useState<number>(totalAmount);
+  const router = useRouter();
 
-  const handleRefund = () => {
+  const handleRefund = async () => {
     if (refundType === "PARTIAL" && (partialAmount <= 0 || partialAmount > totalAmount)) {
       alert("Invalid partial refund amount.");
       return;
@@ -23,10 +25,34 @@ export default function ZohoRefundMock({
     
     setRefundStatus("PROCESSING");
     
-    // Simulate Zoho API Call delay
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/admin/refund", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order_id: orderId,
+          refund_type: refundType,
+          amount: refundType === "FULL" ? totalAmount : partialAmount,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to process refund");
+      }
+
       setRefundStatus("SUCCESS");
-    }, 2000);
+      
+      // Refresh the page to show the updated order status
+      setTimeout(() => {
+        router.refresh();
+      }, 2000);
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message || "An error occurred during refund processing");
+      setRefundStatus("ERROR");
+    }
   };
 
   return (
@@ -123,7 +149,7 @@ export default function ZohoRefundMock({
             </button>
             <p className="text-xs text-[#827e9c] mt-3 flex items-start gap-1.5">
               <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-              Note: This is a UI simulation. In a real-world scenario, this button triggers a secure backend API call to Zoho's Refund endpoint using your secret merchant keys.
+              Note: This button triggers a secure backend API call to update the database. In a real-world scenario, it will also call Zoho's Refund endpoint using your secret merchant keys.
             </p>
           </div>
         </div>

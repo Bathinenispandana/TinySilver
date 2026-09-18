@@ -1,22 +1,49 @@
 import { createClient } from "@/lib/supabase/server";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { DollarSign, ShoppingBag, Clock, CheckCircle, Users, Truck, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import dayjs from "dayjs";
+import DashboardFilter from "./DashboardFilter";
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
   const supabase = await createClient();
+  const { range } = await searchParams;
+
+  // Determine start date based on range filter
+  let startDate = null;
+  const now = dayjs();
+  
+  if (range === "today") {
+    startDate = now.startOf("day").toISOString();
+  } else if (range === "7d") {
+    startDate = now.subtract(7, "day").startOf("day").toISOString();
+  } else if (range === "month") {
+    startDate = now.startOf("month").toISOString();
+  } else if (range === "year") {
+    startDate = now.startOf("year").toISOString();
+  }
 
   // 1. Fetch Orders
-  const { data: rawOrders } = await supabase
+  let ordersQuery = supabase
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (startDate) {
+    ordersQuery = ordersQuery.gte("created_at", startDate);
+  }
+
+  const { data: rawOrders } = await ordersQuery;
 
   // 2. Fetch Profiles to get customer names for recent orders
   const userIds = rawOrders?.map(o => o.user_id) || [];
   let profiles: any[] = [];
   if (userIds.length > 0) {
-    const { data: fetchedProfiles } = await supabase
+    const { data: fetchedProfiles } = await supabaseAdmin
       .from("profiles")
       .select("id, full_name, email, role")
       .in("id", userIds);
@@ -24,10 +51,16 @@ export default async function AdminDashboardPage() {
   }
 
   // Also fetch total registered users
-  const { count: totalCustomersCount } = await supabase
+  let customersQuery = supabaseAdmin
     .from("profiles")
     .select("*", { count: "exact", head: true })
-    .eq("role", "USER");
+    .neq("role", "ADMIN");
+
+  if (startDate) {
+    customersQuery = customersQuery.gte("created_at", startDate);
+  }
+
+  const { count: totalCustomersCount } = await customersQuery;
 
   const orders = rawOrders?.map(order => ({
     ...order,
@@ -35,18 +68,19 @@ export default async function AdminDashboardPage() {
   })) || [];
 
   // Metrics
-  const totalOrders = orders.length;
+  const validRevenueOrders = orders.filter(o => o.status !== "CANCELLED" && o.status !== "PENDING");
+  
+  const totalOrders = validRevenueOrders.length;
   const pendingOrders = orders.filter(o => o.status === "PENDING").length;
   const processingOrders = orders.filter(o => o.status === "PROCESSING").length;
   const dispatchedOrders = orders.filter(o => o.status === "DISPATCHED").length;
   const deliveredOrders = orders.filter(o => o.status === "DELIVERED").length;
   
-  const validRevenueOrders = orders.filter(o => o.status !== "CANCELLED" && o.status !== "PENDING");
   const totalRevenue = validRevenueOrders.reduce((sum, order) => sum + Number(order.total_amount), 0);
   const averageOrderValue = validRevenueOrders.length > 0 ? (totalRevenue / validRevenueOrders.length) : 0;
 
-  // Recent 5 Orders
-  const recentOrders = orders.slice(0, 5);
+  // Recent 5 Orders (Excluding Abandoned Checkouts)
+  const recentOrders = orders.filter(o => o.status !== "PENDING").slice(0, 5);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -69,6 +103,9 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#25314d]">Dashboard Overview</h1>
+        
+        {/* Time Filter Dropdown */}
+        <DashboardFilter />
       </div>
 
       {/* Primary Metrics */}
@@ -107,20 +144,24 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Secondary Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Average Order Value</p>
           <p className="text-xl font-bold text-[#25314d]">₹{averageOrderValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
         </div>
-        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
-          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Pending & Processing</p>
-          <p className="text-xl font-bold text-[#25314d]">{pendingOrders + processingOrders}</p>
+        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm border-t-4 border-t-orange-400">
+          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Abandoned</p>
+          <p className="text-xl font-bold text-[#25314d]">{pendingOrders}</p>
         </div>
-        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm border-t-4 border-t-blue-400">
+          <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Processing</p>
+          <p className="text-xl font-bold text-[#25314d]">{processingOrders}</p>
+        </div>
+        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm border-t-4 border-t-purple-400">
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Dispatched</p>
           <p className="text-xl font-bold text-[#25314d]">{dispatchedOrders}</p>
         </div>
-        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm border-t-4 border-t-green-400">
           <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-xl font-bold text-[#25314d]">{deliveredOrders}</p>
         </div>
@@ -141,6 +182,7 @@ export default async function AdminDashboardPage() {
               <thead className="bg-slate-50 text-slate-500 uppercase text-xs font-semibold">
                 <tr>
                   <th className="px-6 py-4">Order ID</th>
+                  <th className="px-6 py-4">Ref ID</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Date</th>
                   <th className="px-6 py-4">Total Amount</th>
@@ -152,10 +194,13 @@ export default async function AdminDashboardPage() {
                 {recentOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-mono font-medium text-[#25314d]">
+                      {order.display_id || "-"}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-xs text-slate-500">
                       {order.id.slice(0, 8).toUpperCase()}
                     </td>
                     <td className="px-6 py-4">
-                      <p className="font-medium text-[#25314d]">{order.profiles?.full_name || "Guest"}</p>
+                      <p className="font-medium text-[#25314d]">{order.profiles?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Guest"}</p>
                       <p className="text-xs text-slate-500">{order.profiles?.email}</p>
                     </td>
                     <td className="px-6 py-4 text-slate-600">

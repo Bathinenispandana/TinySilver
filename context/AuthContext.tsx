@@ -62,25 +62,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     async function handleSession(session: any) {
-      if (session) {
-        setIsLoggedIn(true);
-        // Fetch profile data from our custom table
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+      try {
+        if (session) {
+          setIsLoggedIn(true);
+          // Fetch profile data from our custom table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
 
-        setAccount({
-          name: profile?.full_name || session.user.user_metadata?.full_name || session.user.user_metadata?.name || "Customer",
-          email: session.user.email || "",
-          phone: profile?.phone || "",
-        });
-      } else {
-        setIsLoggedIn(false);
-        setAccount(defaultAccount);
+          setAccount({
+            name: profile?.full_name || session.user.user_metadata?.full_name || session.user.user_metadata?.name || "Customer",
+            email: session.user.email || "",
+            phone: profile?.phone || "",
+          });
+        } else {
+          setIsLoggedIn(false);
+          setAccount(defaultAccount);
+        }
+      } catch (error) {
+        console.error("Auth context error:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     return () => {

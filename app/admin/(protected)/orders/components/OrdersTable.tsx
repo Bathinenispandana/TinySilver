@@ -28,9 +28,18 @@ function StatusBadge({ status }: { status: string }) {
 export default function OrdersTable({ initialOrders }: { initialOrders: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [activeTab, setActiveTab] = useState<"ACTIVE" | "ABANDONED">("ACTIVE");
 
   const filteredOrders = useMemo(() => {
     return initialOrders.filter((order) => {
+      // 0. Tab Filter (Hide PENDING in Active, show ONLY PENDING in Abandoned)
+      if (activeTab === "ACTIVE" && order.status === "PENDING") {
+        return false;
+      }
+      if (activeTab === "ABANDONED" && order.status !== "PENDING") {
+        return false;
+      }
+
       // 1. Status Filter
       if (statusFilter !== "ALL" && order.status !== statusFilter) {
         return false;
@@ -39,8 +48,9 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
       // 2. Search Filter (Order ID, Customer Name, Email)
       if (searchTerm.trim() !== "") {
         const term = searchTerm.toLowerCase();
-        const orderId = order.id.toLowerCase();
-        const customerName = (order.profiles?.full_name || "Unknown").toLowerCase();
+        const orderId = (order.display_id || order.id).toLowerCase();
+        const profileName = order.profiles?.full_name?.trim();
+        const customerName = (profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User").toLowerCase();
         const customerEmail = (order.profiles?.email || "").toLowerCase();
         
         if (!orderId.includes(term) && !customerName.includes(term) && !customerEmail.includes(term)) {
@@ -58,7 +68,7 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
       return;
     }
 
-    const headers = ["Order ID", "Customer Name", "Email", "Date", "Items", "Total Amount", "Status"];
+    const headers = ["Order ID", "Ref ID", "Customer Name", "Email", "Date", "Items", "Total Amount", "Status"];
     
     const rows = filteredOrders.map(order => {
       const date = new Date(order.created_at).toLocaleDateString("en-IN", {
@@ -72,9 +82,14 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
       // Escape quotes in strings to avoid CSV injection/breaking
       const escapeStr = (str: string) => `"${str.replace(/"/g, '""')}"`;
       
+      const orderIdStr = order.display_id || order.id.split("-")[0].toUpperCase();
+
+      const profileName = order.profiles?.full_name?.trim();
+
       return [
+        orderIdStr,
         order.id.split("-")[0].toUpperCase(),
-        escapeStr(order.profiles?.full_name || "Unknown User"),
+        escapeStr(profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User"),
         escapeStr(order.profiles?.email || ""),
         escapeStr(date),
         escapeStr(itemsStr),
@@ -97,7 +112,37 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Tabs */}
+      <div className="flex border-b border-[#c5c6cc]">
+        <button
+          onClick={() => {
+            setActiveTab("ACTIVE");
+            setStatusFilter("ALL");
+          }}
+          className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+            activeTab === "ACTIVE" 
+              ? "border-[#0f172a] text-[#0f172a]" 
+              : "border-transparent text-[#827e9c] hover:text-[#0f172a]"
+          }`}
+        >
+          All Orders
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("ABANDONED");
+            setStatusFilter("PENDING");
+          }}
+          className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+            activeTab === "ABANDONED" 
+              ? "border-orange-500 text-orange-600" 
+              : "border-transparent text-[#827e9c] hover:text-orange-600"
+          }`}
+        >
+          Abandoned Checkouts
+        </button>
+      </div>
+
       {/* Filters and Actions */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center bg-white p-4 rounded-lg border border-[#c5c6cc] shadow-sm">
         <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -115,25 +160,26 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
             />
           </div>
           
-          {/* Status Filter */}
-          <div className="relative w-full sm:max-w-[200px] flex items-center">
-             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Filter className="h-4 w-4 text-[#827e9c]" />
-             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="block w-full pl-9 pr-8 py-2 border border-[#c5c6cc] rounded-md text-sm focus:ring-[#C9A66B] focus:border-[#C9A66B] outline-none appearance-none bg-white"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="PENDING">Pending</option>
-              <option value="PAID">Paid</option>
-              <option value="PROCESSING">Processing</option>
-              <option value="DISPATCHED">Dispatched</option>
-              <option value="DELIVERED">Delivered</option>
-              <option value="CANCELLED">Cancelled</option>
-            </select>
-          </div>
+          {/* Status Filter (Hidden in Abandoned tab) */}
+          {activeTab === "ACTIVE" && (
+            <div className="relative w-full sm:max-w-[200px] flex items-center">
+               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Filter className="h-4 w-4 text-[#827e9c]" />
+               </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="block w-full pl-9 pr-8 py-2 border border-[#c5c6cc] rounded-md text-sm focus:ring-[#C9A66B] focus:border-[#C9A66B] outline-none appearance-none bg-white"
+              >
+                <option value="ALL">All Statuses</option>
+                <option value="PAID">Paid</option>
+                <option value="PROCESSING">Processing</option>
+                <option value="DISPATCHED">Dispatched</option>
+                <option value="DELIVERED">Delivered</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+          )}
         </div>
         
         {/* Export Action */}
@@ -152,6 +198,7 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
             <thead className="bg-[#f5f5f6] text-[#827e9c] uppercase font-semibold text-xs">
               <tr>
                 <th className="px-6 py-4">Order ID</th>
+                <th className="px-6 py-4">Ref ID</th>
                 <th className="px-6 py-4">Customer</th>
                 <th className="px-6 py-4 min-w-[250px]">Products</th>
                 <th className="px-6 py-4">Date</th>
@@ -164,12 +211,15 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
               {filteredOrders && filteredOrders.length > 0 ? (
                 filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-[#f8f9fa] transition-colors">
-                    <td className="px-6 py-4 font-mono text-xs text-[#0f172a]">
+                    <td className="px-6 py-4 font-mono text-xs font-semibold text-[#0f172a]">
+                      {order.display_id || "-"}
+                    </td>
+                    <td className="px-6 py-4 font-mono text-xs text-[#827e9c]">
                       {order.id.split("-")[0].toUpperCase()}
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-[#0f172a]">
-                        {(order.profiles as any)?.full_name || "Unknown User"}
+                        {(order.profiles as any)?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User"}
                       </div>
                       <div className="text-xs text-[#827e9c]">
                         {(order.profiles as any)?.email}

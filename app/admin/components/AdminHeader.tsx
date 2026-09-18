@@ -9,9 +9,10 @@ import { createClient } from "@/lib/supabase/client";
 
 interface AdminHeaderProps {
   email: string;
+  fullName: string;
 }
 
-export default function AdminHeader({ email }: AdminHeaderProps) {
+export default function AdminHeader({ email, fullName }: AdminHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -72,11 +73,10 @@ export default function AdminHeader({ email }: AdminHeaderProps) {
           className="flex items-center gap-3 p-1.5 rounded-lg hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A66B]/60"
         >
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-white leading-tight">Admin User</p>
-            <p className="text-xs text-white/60">{email}</p>
+            <p className="text-sm font-semibold text-white leading-tight">{fullName}</p>
           </div>
           <div className="h-10 w-10 bg-[#C9A66B] text-[#25314d] rounded-full flex items-center justify-center font-bold text-lg shadow-inner">
-            {email ? email.charAt(0).toUpperCase() : "A"}
+            {fullName ? fullName.charAt(0).toUpperCase() : "A"}
           </div>
           <ChevronDown className="h-4 w-4 text-white/70" />
         </button>
@@ -85,8 +85,8 @@ export default function AdminHeader({ email }: AdminHeaderProps) {
         {menuOpen && (
           <div className="absolute right-0 top-[120%] mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden py-1">
             <div className="px-4 py-3 border-b border-slate-100">
-              <p className="text-sm font-semibold text-slate-800">Signed in as</p>
-              <p className="text-xs text-slate-500 truncate">{email}</p>
+              <p className="text-sm font-semibold text-slate-800">{fullName}</p>
+              <p className="text-xs text-slate-500 truncate mt-0.5">{email}</p>
             </div>
             
             <button

@@ -5,8 +5,8 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="max-w-7xl mx-auto relative overflow-hidden">
-      <div className="relative w-full min-h-[350px] sm:min-h-[400px] lg:min-h-[450px]">
+    <section className="w-full mx-auto relative overflow-hidden">
+      <div className="relative w-full min-h-[21.875rem] sm:min-h-[400px] lg:min-h-[450px]">
 
         {/* Banner */}
         <Image
@@ -33,11 +33,6 @@ export default function HeroSection() {
         {/* Text Content - Left Side */}
         <div className="absolute inset-0 flex items-center">
           <div className="px-6 sm:px-10 lg:px-16 max-w-2xl">
-
-            <span className="inline-block text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-[#25314d]">
-              925 Sterling Silver
-            </span>
-
             <h1 className="mt-3 text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] text-[#25314d]">
               Timeless Silver.
               <br />
