@@ -4,7 +4,7 @@ import { products } from "@/lib/products";
 
 export async function POST(request: Request) {
   try {
-    const { customer, address_id, delivery_method, items } = await request.json();
+    const { customer, address_id, shipping_address, delivery_method, items, is_guest } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
@@ -36,42 +36,60 @@ export async function POST(request: Request) {
     const delivery_fee = delivery_method === "express" ? 249 : 0;
     const total_amount = subtotal + delivery_fee;
 
-    // Fetch the user's ID
-    const { data: profile } = await supabaseAdmin
-      .from("profiles")
-      .select("id")
-      .eq("email", customer.email)
-      .single();
+    let userId = null;
+    let finalAddress = shipping_address;
 
-    if (!profile) {
-      return NextResponse.json({ error: "User profile not found for the provided email." }, { status: 400 });
-    }
+    if (!is_guest) {
+      // Fetch the user's ID
+      const { data: profile } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("email", customer.email)
+        .single();
 
-    // Fetch the shipping address details
-    const { data: address } = await supabaseAdmin
-      .from("addresses")
-      .select("*")
-      .eq("id", address_id)
-      .single();
+      if (!profile) {
+        return NextResponse.json({ error: "User profile not found for the provided email. If you are checking out as a guest, please use the guest flow." }, { status: 400 });
+      }
+      userId = profile.id;
 
-    if (!address) {
-      return NextResponse.json({ error: "Selected address not found." }, { status: 400 });
+      // Fetch the shipping address details
+      if (address_id) {
+        const { data: address } = await supabaseAdmin
+          .from("addresses")
+          .select("*")
+          .eq("id", address_id)
+          .single();
+
+        if (!address) {
+          return NextResponse.json({ error: "Selected address not found." }, { status: 400 });
+        }
+        finalAddress = address;
+      }
+    } else {
+      // It's a guest checkout, ensure we have a shipping address passed directly
+      if (!finalAddress) {
+        return NextResponse.json({ error: "Shipping address is required for guest checkout." }, { status: 400 });
+      }
     }
 
     // Create a PENDING order in the database
+    const orderPayload = {
+      user_id: userId,
+      customer_email: customer.email,
+      is_guest: !!is_guest,
+      status: "PENDING",
+      payment_status: "PENDING",
+      delivery_fee: delivery_fee,
+      total_amount: total_amount,
+      shipping_address: {
+        ...finalAddress,
+        delivery_method,
+      }
+    };
+
     const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
-      .insert({
-        user_id: profile.id,
-        status: "PENDING",
-        payment_status: "PENDING",
-        delivery_fee: delivery_fee,
-        total_amount: total_amount,
-        shipping_address: {
-          ...address,
-          delivery_method,
-        }
-      })
+      .insert(orderPayload)
       .select()
       .single();
 
@@ -101,7 +119,7 @@ export async function POST(request: Request) {
       currency: "INR",
       configurations: {
         hosted_checkout_parameters: {
-          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/orders`,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?order_id=${order.id}&token=${order.tracking_token}`,
           failure_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout`,
           description: `Order ${order.id.split("-")[0].toUpperCase()} for ${customer.fullName || 'Customer'}`
         }

@@ -58,30 +58,19 @@ export default function CheckoutPage() {
 
   const total = subtotal + deliveryCost;
 
+  const [guestAddress, setGuestAddress] = useState({
+    address_line1: "",
+    address_line2: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    country: "India"
+  });
+
   if (authLoading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#0f172a] border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  if (!isLoggedIn) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 lg:px-8 animate-fade-in">
-        <Lock className="mx-auto h-12 w-12 text-[#827e9c] mb-4" />
-        <h1 className="text-2xl font-semibold text-[#0f172a]">
-          Login Required
-        </h1>
-        <p className="mt-2 text-sm text-[#827e9c] max-w-md mx-auto">
-          You must be logged in to securely place an order and manage your delivery addresses.
-        </p>
-        <button
-          onClick={openLogin}
-          className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0f172a] px-8 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-[#827e9c]"
-        >
-          Sign In to Continue
-        </button>
       </div>
     );
   }
@@ -108,18 +97,23 @@ export default function CheckoutPage() {
 
   const handlePayment = async () => {
     if (!customer.fullName.trim() || !customer.email.trim() || !customer.phone.trim()) {
-      alert("Please fill in all customer details.");
+      alert("Please fill in all contact details.");
       return;
     }
 
-    if (!selectedAddress) {
-      alert("Please select or add a shipping address.");
-      return;
-    }
-
-    // Save phone/name to global profile if it was changed
-    if (customer.phone !== account.phone || customer.fullName !== account.name) {
-      await updateAccount({ name: customer.fullName, phone: customer.phone });
+    if (isLoggedIn) {
+      if (!selectedAddress) {
+        alert("Please select or add a shipping address.");
+        return;
+      }
+      if (customer.phone !== account?.phone || customer.fullName !== account?.name) {
+        await updateAccount({ name: customer.fullName, phone: customer.phone });
+      }
+    } else {
+      if (!guestAddress.address_line1.trim() || !guestAddress.city.trim() || !guestAddress.state.trim() || !guestAddress.postal_code.trim()) {
+        alert("Please fill in all required shipping address fields.");
+        return;
+      }
     }
 
     try {
@@ -130,7 +124,13 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           customer,
-          address_id: selectedAddress.id,
+          is_guest: !isLoggedIn,
+          address_id: isLoggedIn ? selectedAddress?.id : undefined,
+          shipping_address: !isLoggedIn ? {
+            full_name: customer.fullName,
+            phone_number: customer.phone,
+            ...guestAddress
+          } : undefined,
           delivery_method: delivery,
           items: items.map(item => ({
             product_id: item.product.id,
@@ -147,7 +147,6 @@ export default function CheckoutPage() {
       }
 
       if (data.url) {
-        // Redirect to Zoho Payment Gateway
         window.location.href = data.url;
       } else {
         throw new Error("Invalid response from payment gateway");
@@ -160,12 +159,22 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 animate-fade-in">
-      <h1 className="text-2xl font-semibold text-[#0f172a] sm:text-3xl">
-        Checkout
-      </h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
+        <h1 className="text-2xl font-semibold text-[#0f172a] sm:text-3xl">
+          Checkout
+        </h1>
+        {!isLoggedIn && (
+          <div className="text-sm">
+            <span className="text-[#827e9c]">Already have an account? </span>
+            <button onClick={openLogin} className="font-semibold text-[#0f172a] hover:underline">
+              Log in
+            </button>
+          </div>
+        )}
+      </div>
 
-      <p className="mt-2 text-sm text-[#827e9c]">
-        Select your delivery address and proceed to secure payment.
+      <p className="text-sm text-[#827e9c]">
+        {isLoggedIn ? "Select your delivery address and proceed to secure payment." : "Checkout as a guest or log in for a faster experience."}
       </p>
 
       {paymentError && (
@@ -198,7 +207,7 @@ export default function CheckoutPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label htmlFor="fullName" className="mb-1.5 block text-xs font-medium text-[#827e9c]">
-                  Full Name
+                  Full Name *
                 </label>
                 <input
                   id="fullName"
@@ -212,21 +221,22 @@ export default function CheckoutPage() {
 
               <div>
                 <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-[#827e9c]">
-                  Email
+                  Email *
                 </label>
                 <input
                   id="email"
                   required
                   type="email"
                   value={customer.email}
-                  disabled
-                  className="w-full rounded-lg border border-[#c5c6cc] bg-gray-50 px-3.5 py-2.5 text-sm text-[#0f172a] outline-none opacity-80"
+                  disabled={isLoggedIn}
+                  onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
+                  className={`w-full rounded-lg border border-[#c5c6cc] px-3.5 py-2.5 text-sm text-[#0f172a] outline-none ${isLoggedIn ? 'bg-gray-50 opacity-80' : 'transition-all duration-300 focus:border-[#827e9c]'}`}
                 />
               </div>
 
               <div>
                 <label htmlFor="phone" className="mb-1.5 block text-xs font-medium text-[#827e9c]">
-                  Phone (for updates)
+                  Phone (for updates) *
                 </label>
                 <input
                   id="phone"
@@ -240,15 +250,89 @@ export default function CheckoutPage() {
             </div>
           </section>
 
-          {/* Shipping Address using AddressManager */}
+          {/* Shipping Address */}
           <section className="rounded-xl border border-[#c5c6cc] p-6 bg-white shadow-sm">
-            <AddressManager 
-              selectable={true} 
-              onAddressSelect={setSelectedAddress}
-              selectedAddressId={selectedAddress?.id}
-            />
-            {!selectedAddress && (
-              <p className="text-xs text-red-500 mt-2">* Please select an address to continue</p>
+            {isLoggedIn ? (
+              <>
+                <AddressManager 
+                  selectable={true} 
+                  onAddressSelect={setSelectedAddress}
+                  selectedAddressId={selectedAddress?.id}
+                />
+                {!selectedAddress && (
+                  <p className="text-xs text-red-500 mt-2">* Please select an address to continue</p>
+                )}
+              </>
+            ) : (
+              <div>
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-[#0f172a] mb-5">
+                  Shipping Address
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">Address Line 1 *</label>
+                    <input
+                      type="text"
+                      required
+                      value={guestAddress.address_line1}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, address_line1: e.target.value })}
+                      className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
+                      placeholder="House No., Building, Street"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">Address Line 2 (Optional)</label>
+                    <input
+                      type="text"
+                      value={guestAddress.address_line2}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, address_line2: e.target.value })}
+                      className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">City *</label>
+                    <input
+                      type="text"
+                      required
+                      value={guestAddress.city}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, city: e.target.value })}
+                      className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">State *</label>
+                    <select
+                      required
+                      value={guestAddress.state}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, state: e.target.value })}
+                      className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
+                    >
+                      <option value="" disabled>Select State</option>
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Telangana">Telangana</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">Pincode *</label>
+                    <input
+                      type="text"
+                      required
+                      value={guestAddress.postal_code}
+                      onChange={(e) => setGuestAddress({ ...guestAddress, postal_code: e.target.value })}
+                      className="w-full rounded-lg border border-[#c5c6cc] px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-[#827e9c] transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-[#827e9c]">Country</label>
+                    <input
+                      type="text"
+                      disabled
+                      value="India"
+                      className="w-full rounded-lg border border-[#c5c6cc] bg-gray-50 px-3 py-2 text-sm text-[#0f172a] outline-none opacity-80"
+                    />
+                  </div>
+                </div>
+              </div>
             )}
           </section>
 

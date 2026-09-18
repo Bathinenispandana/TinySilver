@@ -8,6 +8,7 @@ interface QuantitySelectorProps {
   min?: number;
   max?: number;
   size?: "sm" | "md";
+  onStockExceeded?: () => void;
 }
 
 export default function QuantitySelector({
@@ -16,34 +17,67 @@ export default function QuantitySelector({
   min = 1,
   max = 20,
   size = "md",
+  onStockExceeded,
 }: QuantitySelectorProps) {
-  const btnSize = size === "sm" ? "h-8 w-8" : "h-10 w-10";
-  const textSize = size === "sm" ? "text-sm" : "text-base";
+  const btnSize =
+    size === "sm"
+      ? "h-8 w-8"
+      : "h-10 w-10";
+
+  const textSize =
+    size === "sm"
+      ? "text-sm"
+      : "text-base";
+
+  const handleDecrease = () => {
+    if (quantity > min) {
+      onChange(quantity - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    // User has reached the maximum available quantity
+    if (quantity >= max) {
+      onStockExceeded?.();
+      return;
+    }
+
+    onChange(quantity + 1);
+  };
 
   return (
     <div className="inline-flex items-center border border-[#c5c6cc] rounded-full overflow-hidden">
+      {/* MINUS */}
+
       <button
         type="button"
         aria-label="Decrease quantity"
         disabled={quantity <= min}
-        onClick={() => onChange(Math.max(min, quantity - 1))}
+        onClick={handleDecrease}
         className={`${btnSize} flex items-center justify-center text-[#0f172a] hover:bg-[#c5c6cc]/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300`}
       >
         <Minus className="h-3.5 w-3.5" />
       </button>
+
+      {/* QUANTITY */}
+
       <span
         className={`${textSize} ${
-          size === "sm" ? "w-8" : "w-10"
+          size === "sm"
+            ? "w-8"
+            : "w-10"
         } text-center font-medium text-[#0f172a] select-none`}
       >
         {quantity}
       </span>
+
+      {/* PLUS */}
+
       <button
         type="button"
         aria-label="Increase quantity"
-        disabled={quantity >= max}
-        onClick={() => onChange(Math.min(max, quantity + 1))}
-        className={`${btnSize} flex items-center justify-center text-[#0f172a] hover:bg-[#c5c6cc]/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300`}
+        onClick={handleIncrease}
+        className={`${btnSize} flex items-center justify-center text-[#0f172a] hover:bg-[#c5c6cc]/40 transition-all duration-300`}
       >
         <Plus className="h-3.5 w-3.5" />
       </button>
