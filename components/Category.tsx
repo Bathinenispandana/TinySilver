@@ -76,7 +76,7 @@ export default function Category() {
   }, []);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 bg-[#e8e8e8] sm:px-6 lg:px-8 py-10 sm:py-14">
+    <section className="w-full mx-auto px-4 bg-[#e8e8e8] sm:px-6 lg:px-8 py-10 sm:py-14">
 
       {/* Heading */}
       <div className="text-center max-w-xl mx-auto">
