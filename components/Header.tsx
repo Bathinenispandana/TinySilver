@@ -43,7 +43,8 @@ type LocationDetails = {
   pincode: string;
   state: string;
   district: string;
-  city: string;
+  city?: string;
+  locality?: string;
 };
 
 interface HeaderProps {
@@ -69,6 +70,8 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationMessage, setLocationMessage] = useState("");
+
+  const [localities, setLocalities] = useState<{name: string; block: string | null; branchType: string | null;}[]>([]);
 
   const [isDeliverable, setIsDeliverable] = useState<boolean | null>(null);
 
@@ -104,7 +107,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
         setLocationDetails(parsed);
         setPincode(parsed.pincode);
-        setSelectedLocation(parsed.city || "India");
+        setSelectedLocation(parsed.locality || parsed.district || "India");
         setIsDeliverable(true);
       } catch (error) {
         console.error("Unable to load saved location:", error);
@@ -193,6 +196,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
     setPincode(numbersOnly);
     setLocationMessage("");
     setIsDeliverable(null);
+    setLocalities([]);
   };
 
   const checkPincode = async () => {
@@ -206,6 +210,7 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       setLocationLoading(true);
       setLocationMessage("");
       setIsDeliverable(null);
+      setLocalities([]);
 
       const response = await fetch(`/api/pincode/${pincode}`);
       const data = await response.json();
@@ -229,14 +234,13 @@ export default function Header({ onOpenLogin }: HeaderProps) {
       const newLocation: LocationDetails = data.location;
 
       setLocationDetails(newLocation);
-      setSelectedLocation(newLocation.city);
+      setSelectedLocation(newLocation.district);
       setPincode(newLocation.pincode);
 
-      setLocationMessage(
-        `Delivery available in ${newLocation.city}, ${newLocation.state}.`,
-      );
+      setLocationMessage(data.message);
 
       setIsDeliverable(true);
+      if (data.localities) setLocalities(data.localities);
 
       localStorage.setItem(
         "tiny-silver-delivery-location",
@@ -255,12 +259,32 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
   const clearLocation = () => {
     setPincode("");
-    setSelectedLocation("AP & TS");
+    setSelectedLocation("TG & AP");
     setLocationDetails(null);
     setLocationMessage("");
     setIsDeliverable(null);
+    setLocalities([]);
 
     localStorage.removeItem("tiny-silver-delivery-location");
+  };
+
+  const selectLocality = (locality: { name: string; block: string | null }) => {
+    if (!locationDetails) return;
+    
+    const finalLocation = {
+      ...locationDetails,
+      locality: locality.name,
+    };
+    
+    setLocationDetails(finalLocation);
+    setSelectedLocation(locality.name);
+    setLocalities([]);
+    setLocationMessage(`Delivery available in ${locality.name}, ${locationDetails.district}.`);
+    
+    localStorage.setItem(
+      "tiny-silver-delivery-location",
+      JSON.stringify(finalLocation),
+    );
   };
 
   const handlePincodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -488,12 +512,33 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
                             {locationDetails && (
                               <p className="mt-1 text-xs text-slate-600">
-                                {locationDetails.district},{" "}
+                                {locationDetails.locality && `${locationDetails.locality}, `}{locationDetails.district},{" "}
                                 {locationDetails.state} -{" "}
                                 {locationDetails.pincode}
                               </p>
                             )}
                           </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {isDeliverable && localities.length > 0 && (
+                      <div className="mt-4">
+                        <p className="mb-2 text-sm font-medium text-slate-700">
+                          Select your exact area:
+                        </p>
+                        <div className="max-h-48 space-y-1 overflow-y-auto pr-1">
+                          {localities.map((loc) => (
+                            <button
+                              key={loc.name}
+                              type="button"
+                              onClick={() => selectLocality(loc)}
+                              className="flex w-full items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-left text-sm text-slate-700 transition hover:border-[#C9A66B] hover:bg-slate-50"
+                            >
+                              <span>{loc.name}</span>
+                              {loc.block && <span className="text-xs text-slate-400">{loc.block}</span>}
+                            </button>
+                          ))}
                         </div>
                       </div>
                     )}
@@ -835,11 +880,32 @@ export default function Header({ onOpenLogin }: HeaderProps) {
 
                       {locationDetails && (
                         <p className="mt-1 text-xs text-white/50">
-                          {locationDetails.district}, {locationDetails.state} -{" "}
+                          {locationDetails.locality && `${locationDetails.locality}, `}{locationDetails.district}, {locationDetails.state} -{" "}
                           {locationDetails.pincode}
                         </p>
                       )}
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {isDeliverable && localities.length > 0 && (
+                <div className="mt-4">
+                  <p className="mb-2 text-sm font-medium text-white/90">
+                    Select your exact area:
+                  </p>
+                  <div className="max-h-48 space-y-1 overflow-y-auto pr-1">
+                    {localities.map((loc) => (
+                      <button
+                        key={loc.name}
+                        type="button"
+                        onClick={() => selectLocality(loc)}
+                        className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left text-sm text-white transition hover:border-[#C9A66B] hover:bg-white/10"
+                      >
+                        <span>{loc.name}</span>
+                        {loc.block && <span className="text-xs text-white/40">{loc.block}</span>}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
