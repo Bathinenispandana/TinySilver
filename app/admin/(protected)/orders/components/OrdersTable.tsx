@@ -50,8 +50,8 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
         const term = searchTerm.toLowerCase();
         const orderId = (order.display_id || order.id).toLowerCase();
         const profileName = order.profiles?.full_name?.trim();
-        const customerName = (profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User").toLowerCase();
-        const customerEmail = (order.profiles?.email || "").toLowerCase();
+        const customerName = (profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Guest").toLowerCase();
+        const customerEmail = (order.profiles?.email || order.customer_email || "").toLowerCase();
         
         if (!orderId.includes(term) && !customerName.includes(term) && !customerEmail.includes(term)) {
           return false;
@@ -89,8 +89,8 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
       return [
         orderIdStr,
         order.id.split("-")[0].toUpperCase(),
-        escapeStr(profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User"),
-        escapeStr(order.profiles?.email || ""),
+        escapeStr(profileName || order.shipping_address?.full_name || order.shipping_address?.name || "Guest"),
+        escapeStr(order.profiles?.email || order.customer_email || ""),
         escapeStr(date),
         escapeStr(itemsStr),
         order.total_amount,
@@ -219,10 +219,10 @@ export default function OrdersTable({ initialOrders }: { initialOrders: any[] })
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-[#0f172a]">
-                        {(order.profiles as any)?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Unknown User"}
+                        {(order.profiles as any)?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Guest"}
                       </div>
                       <div className="text-xs text-[#827e9c]">
-                        {(order.profiles as any)?.email}
+                        {(order.profiles as any)?.email || order.customer_email || "No Email provided"}
                       </div>
                     </td>
                     <td className="px-6 py-4">

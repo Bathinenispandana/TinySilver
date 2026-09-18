@@ -107,7 +107,7 @@ export default async function AdminOrderDetailsPage({
                   <p className="font-medium text-[#0f172a]">
                     {customer?.full_name?.trim() || order.shipping_address?.full_name || order.shipping_address?.name || "Guest"}
                   </p>
-                  <p className="text-sm text-[#827e9c]">{customer?.email || "No email"}</p>
+                  <p className="text-sm text-[#827e9c]">{customer?.email || order.customer_email || "No email provided"}</p>
                   <p className="text-sm text-[#827e9c]">
                     {customer?.phone || order.shipping_address?.phone_number || order.shipping_address?.phone || "No phone provided"}
                   </p>
