@@ -59,7 +59,7 @@ export const products: Product[] = [
   {
     id: 1,
     name: "Silver Kumkum Box - 2.5g",
-    price: 1000,
+    price: 600,
     originalPrice: 1200,
 
     image: "/silver-kumkumbox-2.5g-1.webp",
@@ -90,7 +90,7 @@ export const products: Product[] = [
   {
     id: 2,
     name: "Silver Kumkum Box - 5g",
-    price: 1000,
+    price: 1200,
     originalPrice: 1200,
 
     image: "/silver-kumkumbox-5g-1.webp",
@@ -121,7 +121,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: "Silver Kumkum Box - 8g",
-    price: 1000,
+    price: 1920,
     originalPrice: 1250,
 
     image: "/silver-kumkumbox-8g-1.webp",
@@ -157,7 +157,7 @@ export const products: Product[] = [
   {
     id: 4,
     name: "Silver Diya - 5g",
-    price: 1000,
+    price: 1200,
     originalPrice: 1150,
 
     image: "/silver-diya-5g-1.webp",
@@ -188,7 +188,7 @@ export const products: Product[] = [
   {
     id: 5,
     name: "Silver Diya - 9g",
-    price: 1000,
+    price: 1200,
     originalPrice: 1250,
 
     image: "/silver-diya-9g-1.webp",
@@ -260,7 +260,7 @@ export const products: Product[] = [
   {
     id: 7,
     name: "Butterfly Toe Ring",
-    price: 2520,
+    price: 720,
     originalPrice: 2800,
 
     image: "/butterfly-3g-1.webp",
@@ -291,7 +291,7 @@ export const products: Product[] = [
   {
     id: 8,
     name: "Peacock Toe Ring",
-    price: 2520,
+    price: 720,
     originalPrice: 2800,
 
     image: "/peacock-3g-1.webp",
@@ -322,7 +322,7 @@ export const products: Product[] = [
   {
     id: 9,
     name: "Flower Toe Ring",
-    price: 2520,
+    price: 720,
     originalPrice: 2800,
 
     image: "/flower-4g-1.webp",
@@ -353,7 +353,7 @@ export const products: Product[] = [
   {
     id: 10,
     name: "Rounded Toe Ring",
-    price: 2520,
+    price: 720,
     originalPrice: 2800,
 
     image: "/rounded-3g-1.webp",
@@ -389,7 +389,7 @@ export const products: Product[] = [
   {
     id: 11,
     name: "Silver Coin - 1g",
-    price: 8500,
+    price: 240,
     originalPrice: 9000,
 
     image: "/silver-coin-1g.webp",
@@ -420,7 +420,7 @@ export const products: Product[] = [
   {
     id: 12,
     name: "Silver Coin - 2g",
-    price: 8500,
+    price: 480,
     originalPrice: 9000,
 
     image: "/silver-coin-2g.webp",
@@ -451,7 +451,7 @@ export const products: Product[] = [
   {
     id: 13,
     name: "Silver Coin - 5g",
-    price: 8500,
+    price: 1200,
     originalPrice: 9500,
 
     image: "/silver-coin-5g.webp",
@@ -487,7 +487,7 @@ export const products: Product[] = [
   {
     id: 14,
     name: "Silver Glass - 5g",
-    price: 4200,
+    price: 1200,
     originalPrice: 4600,
 
     image: "/5g-glass.webp",
@@ -523,7 +523,7 @@ export const products: Product[] = [
   {
     id: 15,
     name: "Silver Flower - 5g",
-    price: 4200,
+    price: 1200,
     originalPrice: 4500,
 
     image: "/silver-flower-5g-1.webp",
@@ -559,7 +559,7 @@ export const products: Product[] = [
   {
     id: 16,
     name: "Silver Mango Leaf",
-    price: 4200,
+    price: 480,
     originalPrice: 4500,
 
     image: "/2g-Mango-leaf.webp",
@@ -590,7 +590,7 @@ export const products: Product[] = [
   {
     id: 17,
     name: "Silver Peepal Leaf",
-    price: 4200,
+    price: 480,
     originalPrice: 4500,
 
     image: "/2g-Peepal-leaf.webp",
@@ -626,7 +626,7 @@ export const products: Product[] = [
   {
     id: 18,
     name: "Silver Srichakra",
-    price: 4200,
+    price: 480,
     originalPrice: 4600,
 
     image: "/srichakra-2g.webp",
@@ -656,12 +656,42 @@ export const products: Product[] = [
   {
     id: 19,
     name: "Silver Bowl",
-    price: 4200,
+    price: 1920,
     originalPrice: 4600,
 
     image: "/silver-bowl-8g.webp",
     images: [
       "/silver-bowl-8g.webp",
+    ],
+
+    category: "Bowl",
+    collection: "daily-wear",
+
+    isNew: false,
+    isBestSeller: false,
+
+    material: "Silver",
+    weight: "8g",
+    dimensions: "Standard",
+
+    description:
+      "Intricately designed silver bowl suitable for pooja and spiritual spaces.",
+
+    rating: 4.9,
+    reviews: 23,
+
+    inStock: true,
+    stock: 4,
+  },
+  {
+    id: 20,
+    name: "Silver Bowl",
+    price: 1920,
+    originalPrice: 4600,
+
+    image: "/silver-bowl2.jpeg",
+    images: [
+      "/silver-bowl2.jpeg",
     ],
 
     category: "Bowl",
@@ -684,9 +714,9 @@ export const products: Product[] = [
     stock: 4,
   },
   {
-    id: 20,
+    id: 21,
     name: "Ear Cuffs",
-    price: 4200,
+    price: 720,
     originalPrice: 4600,
 
     image: "/ear-cuffs-3g-1.webp",
@@ -714,9 +744,9 @@ export const products: Product[] = [
     stock: 4,
   },
   {
-    id: 21,
+    id: 22,
     name: "Ear Cuffs",
-    price: 4200,
+    price: 720,
     originalPrice: 4600,
 
     image: "/ear-cuffs-3g-2.webp",
@@ -727,7 +757,7 @@ export const products: Product[] = [
     category: "Earcuffs",
     collection: "daily-wear",
 
-    isNew: true,
+    isNew: false,
     isBestSeller: false,
 
     material: "Silver",
@@ -744,9 +774,9 @@ export const products: Product[] = [
     stock: 4,
   },
   {
-    id: 22,
+    id: 23,
     name: "Ear Cuffs",
-    price: 4200,
+    price: 720,
     originalPrice: 4600,
 
     image: "/ear-cuffs-3g-3.webp",
@@ -757,7 +787,7 @@ export const products: Product[] = [
     category: "Earcuffs",
     collection: "daily-wear",
 
-    isNew: true,
+    isNew: false,
     isBestSeller: false,
 
     material: "Silver",
