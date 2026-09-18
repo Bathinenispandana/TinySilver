@@ -122,30 +122,43 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
         {/* Bottom Footer */}
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
-          <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} Tiny Silver Collection. All rights reserved.
-          </p>
+          <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <p className="text-xs text-slate-500">
+              © {new Date().getFullYear()} Tiny Silver Collection. All rights reserved.
+            </p>
 
-          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-slate-500 sm:justify-end">
-            <Link
-              href="/privacy-policy"
-              className="transition-colors duration-300 hover:text-white"
-            >
-              Privacy Policy
-            </Link>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-slate-500 sm:justify-end">
+              <Link
+                href="/privacy-policy"
+                className="transition-colors duration-300 hover:text-white"
+              >
+                Privacy Policy
+              </Link>
 
-            <Link
-              href="/terms"
-              className="transition-colors duration-300 hover:text-white"
-            >
-              Terms & Conditions
-            </Link>
+              <Link
+                href="/terms"
+                className="transition-colors duration-300 hover:text-white"
+              >
+                Terms & Conditions
+              </Link>
+
+              <Link
+                href="/refund-cancellation-policy"
+                className="transition-colors duration-300 hover:text-white"
+              >
+                Refund & Cancellation Policy
+              </Link>
+
+              <Link
+                href="/shipping-delivery-policy"
+                className="transition-colors duration-300 hover:text-white"
+              >
+                Shipping & Delivery Policy
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    </footer>
-  );
-}
+      </footer>
+    );
+  }
